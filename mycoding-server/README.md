@@ -5,7 +5,7 @@
 > **GitHub: [https://github.com/csulwk/mycoding.git](https://github.com/csulwk/mycoding.git)**  
 
 ## Environment
-* `SpringBoot 2.2.5.RELEASE`  
+* `SpringBoot 2.2.1.RELEASE`  
 
 ## Framework
 ```
@@ -15,7 +15,8 @@ mycoding-server
 │  │  ├─ java
 │  │  │  ├─ com.mc.mycodingserver
 │  │  │  │  ├─ controller                   -- 请求类
-│  │  │  │  ├─ dao                          -- 实体类
+│  │  │  │  ├─ dao                          -- 查询类
+│  │  │  │  ├─ entity                       -- 实体类
 │  │  │  │  └─ service                      -- 业务类
 │  │  │  └─ MycodingServerApplication.java  -- 启动类
 │  │  └─ resources

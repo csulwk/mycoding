@@ -1,13 +1,13 @@
 package com.mc.mycodingserver;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MycodingServerApplicationTests {
+class MycodingServerApplicationTest {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void test() {
+    }
 
 }
