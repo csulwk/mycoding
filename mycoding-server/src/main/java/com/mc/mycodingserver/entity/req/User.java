@@ -16,9 +16,9 @@ import javax.validation.constraints.NotBlank;
 public class User {
 
     @NotBlank
-    private String userName;
+    private String username;
     @NotBlank
-    private String passWord;
+    private String password;
 
     @Override
     public String toString() {

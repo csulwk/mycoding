@@ -1,10 +1,10 @@
 <template>
     <div>
-        用户名:<input type="text" v-model="loginForm.username" placeholder="请输入用户名"/>
+        Username: <input type="text" v-model="loginForm.username" placeholder="username"/>
         <br><br>
-        密码： <input type="password" v-model="loginForm.password" placeholder="请输入密码"/>
+        Password: <input type="password" v-model="loginForm.password" placeholder="password"/>
         <br><br>
-        <button v-on:click="login">登录</button>
+        <button v-on:click="login">LOGIN</button>
     </div>
 </template>
 
@@ -16,8 +16,7 @@
                 loginForm: {
                     username: '',
                     password: ''
-                },
-                responseResult: []
+                }
             }
         },
         methods: {
@@ -27,12 +26,17 @@
                         username: this.loginForm.username,
                         password: this.loginForm.password
                     })
-                    .then(successResponse => {
-                        if (successResponse.data.code === 200) {
-                            this.$router.replace({path: '/index'})
+                    .then(resp => {
+                        console.log(resp)
+                        console.log(resp.data.retCode)
+                        if (resp.data.retCode === '000000'){
+                            this.$router.push('/')
+                        }else {
+                            this.$router.push('/register')
                         }
                     })
-                    .catch(failResponse => {
+                    .catch(resp => {
+                        console.log(resp)
                     })
             }
         }
