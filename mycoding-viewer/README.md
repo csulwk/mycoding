@@ -5,17 +5,14 @@
 > **GitHub: [https://github.com/csulwk/mycoding.git](https://github.com/csulwk/mycoding.git)**  
 
 ## Environment
-* `node 12.16.1`  
+* `Node 12.16.1`  
+* `VueCLI 4.2.3`  
 
 ## Framework
 ```
 mycoding-viewer  
-├─ build                                    -- 构建脚本
-├─ config                                   -- 项目配置
+├─ public                                   -- 入口界面
 ├─ src                                      -- 源码目录
-├─ static                                   -- 静态资源
-├─ test                                     -- 测试文件
-├─ index.html                               -- 入口页面
 ├─ .gitignore
 └─ README.md
 ```

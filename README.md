@@ -6,6 +6,7 @@
 
 ## Environment
 * `SpringBoot 2.2.5.RELEASE`  
+* `vue 2.9.6`  
 
 ## Framework
 ```
