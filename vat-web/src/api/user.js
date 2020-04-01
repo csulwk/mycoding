@@ -2,23 +2,22 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/vat-web/user/login',
+    url: '/mc/admin/login',
     method: 'post',
     data
   })
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/vat-web/user/info',
-    method: 'get',
-    params: { token }
+    url: '/mc/admin/info',
+    method: 'get'
   })
 }
 
 export function logout() {
   return request({
-    url: '/vat-web/user/logout',
+    url: '/mc/admin/logout',
     method: 'post'
   })
 }

@@ -1,9 +1,9 @@
-package com.mc.mycodingserver.controller;
+package com.mc.coding.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mc.mycodingserver.constant.RetMsg;
-import com.mc.mycodingserver.entity.req.User;
-import com.mc.mycodingserver.util.ResultUtil;
+import com.mc.coding.constant.RetMsg;
+import com.mc.coding.entity.req.User;
+import com.mc.coding.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
@@ -15,7 +15,7 @@ import org.springframework.web.util.HtmlUtils;
  */
 @Slf4j
 @RestController
-@RequestMapping(value = "/mc")
+@RequestMapping(value = "/mc/user")
 public class LoginController {
 
     @PostMapping("/login")
@@ -31,5 +31,10 @@ public class LoginController {
         } else {
             return ResultUtil.retSuccess("ok");
         }
+    }
+
+    @GetMapping("/info")
+    public JSONObject getInfo() {
+        return ResultUtil.retSuccess("获取用户信息成功");
     }
 }

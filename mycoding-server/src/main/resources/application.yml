@@ -1,2 +1,15 @@
 server:
-  port: 9081
+  port: 9021
+spring:
+  application:
+    name: mycoding-server
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.99.100:3306/mycoding?characterEncoding=utf8&useSSL=false
+    username: root
+    password: 123456
+mybatis:
+  type-aliases-package: com.mc.coding.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true

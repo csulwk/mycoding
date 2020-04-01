@@ -1,7 +1,7 @@
-package com.mc.mycodingserver.util;
+package com.mc.coding.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mc.mycodingserver.constant.RetMsg;
+import com.mc.coding.constant.RetMsg;
 
 /**
  * @author kai

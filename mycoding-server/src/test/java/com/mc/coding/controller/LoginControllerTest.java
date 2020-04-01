@@ -1,4 +1,4 @@
-package com.mc.mycodingserver.controller;
+package com.mc.coding.controller;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;

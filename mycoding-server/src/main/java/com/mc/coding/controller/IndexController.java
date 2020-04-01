@@ -1,4 +1,4 @@
-package com.mc.mycodingserver.controller;
+package com.mc.coding.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

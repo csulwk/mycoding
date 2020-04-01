@@ -13,7 +13,7 @@ mycoding-server
 ├─ src  
 │  ├─ main
 │  │  ├─ java
-│  │  │  ├─ com.mc.mycodingserver
+│  │  │  ├─ com.mc.coding
 │  │  │  │  ├─ controller                   -- 请求类
 │  │  │  │  ├─ dao                          -- 查询类
 │  │  │  │  ├─ entity                       -- 实体类

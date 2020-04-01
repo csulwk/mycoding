@@ -1,4 +1,4 @@
-package com.mc.mycodingserver.constant;
+package com.mc.coding.constant;
 
 /**
  * 响应码常量类

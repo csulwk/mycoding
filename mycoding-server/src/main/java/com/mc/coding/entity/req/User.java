@@ -1,4 +1,4 @@
-package com.mc.mycodingserver.entity.req;
+package com.mc.coding.entity.req;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
