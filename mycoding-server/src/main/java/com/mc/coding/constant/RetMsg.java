@@ -11,11 +11,21 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RetMsg {
-    SUCCESS(CodeSet.CODE_S000, "返回成功"),
+    SUCCESS(CodeSet.CODE_S000, "恭喜你"),
+    /**
+     * 输入参数异常
+     */
     RET_E101(CodeSet.CODE_E101, "查询类型输入有误"),
     RET_E102(CodeSet.CODE_E102, "输入异常"),
+    /**
+     * 用户信息异常
+     */
     RET_E201(CodeSet.CODE_E201, "用户名或密码错误"),
-    RET_E202(CodeSet.CODE_E202, "登录异常"),
+    RET_E202(CodeSet.CODE_E202, "用户未登录"),
+    RET_E203(CodeSet.CODE_E203, "用户权限不足"),
+    /**
+     * 程序特殊异常
+     */
     ERROR(CodeSet.CODE_E999, "未定义异常");
 
     private String code;

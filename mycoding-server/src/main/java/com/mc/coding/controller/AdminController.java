@@ -57,12 +57,25 @@ public class AdminController {
     }
 
     /**
+     * 用户登出
+     * @return
+     */
+    @RequestMapping("/logout")
+    public JSONObject logout() {
+        Subject subject = SecurityUtils.getSubject();
+        log.info("获取当前用户信息 -> {}", JSONObject.toJSON(subject.getPrincipal()));
+        subject.logout();
+        return ResultUtil.retSuccess("当前用户已退出登录");
+    }
+
+    /**
      * 获取当前登录用户信息
      * @return
      */
     @GetMapping("/info")
     public JSONObject getLoginInfo() {
-        Admin admin = (Admin) getLoginUser();
+        Admin admin = (Admin) SecurityUtils.getSubject().getPrincipal();
+        log.info("获取当前用户信息 -> {}", admin);
         JSONObject obj = new JSONObject();
         obj.put("name", admin.getUsername());
         obj.put("email", admin.getEmail());
@@ -72,12 +85,26 @@ public class AdminController {
         return ResultUtil.retSuccess(obj);
     }
 
-    private Object getLoginUser() {
-        Session session = SecurityUtils.getSubject().getSession();
-        SimplePrincipalCollection principalCollection = (SimplePrincipalCollection) session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY);
-        if (principalCollection == null) {
-            return null;
-        }
-        return principalCollection.getPrimaryPrincipal();
+    /**
+     * 用户未登录返回信息
+     * @return
+     */
+    @RequestMapping(value = "/unlogged")
+    public JSONObject unlogged() {
+        Admin admin = (Admin) SecurityUtils.getSubject().getPrincipal();
+        log.info("用户未登录 -> {}", admin);
+        return ResultUtil.resp(RetMsg.RET_E202);
     }
+
+    /**
+     * 用户权限不足返回信息
+     * @return
+     */
+    @RequestMapping(value = "/unauthorized")
+    public JSONObject unauthorized(){
+        Admin admin = (Admin) SecurityUtils.getSubject().getPrincipal();
+        log.info("用户权限不足 -> {}", admin);
+        return ResultUtil.resp(RetMsg.RET_E203);
+    }
+
 }

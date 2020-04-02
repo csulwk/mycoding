@@ -10,6 +10,7 @@ public interface CodeSet {
     String CODE_E102 = "E00102";
     String CODE_E201 = "E00201";
     String CODE_E202 = "E00202";
+    String CODE_E203 = "E00203";
     String CODE_E999 = "E00999";
     String CODE_S000 = "000000";
 }

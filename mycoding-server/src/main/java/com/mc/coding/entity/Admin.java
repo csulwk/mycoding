@@ -1,5 +1,6 @@
 package com.mc.coding.entity;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,4 +17,9 @@ public class Admin {
     private String password;
     private String email;
     private String motto;
+
+    @Override
+    public String toString() {
+        return JSONObject.toJSONString(this);
+    }
 }
