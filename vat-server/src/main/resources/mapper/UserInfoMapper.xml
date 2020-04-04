@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mc.vat.mapper.UserInfoMapper">
+  <resultMap id="BaseResultMap" type="com.mc.vat.entity.UserInfo">
+    <id column="ui_user_id" jdbcType="INTEGER" property="uiUserId" />
+    <result column="ui_username" jdbcType="VARCHAR" property="uiUsername" />
+    <result column="ui_password" jdbcType="VARCHAR" property="uiPassword" />
+    <result column="ui_salt" jdbcType="VARCHAR" property="uiSalt" />
+    <result column="ui_user_desc" jdbcType="VARCHAR" property="uiUserDesc" />
+    <result column="ui_sex" jdbcType="INTEGER" property="uiSex" />
+    <result column="ui_mobile" jdbcType="VARCHAR" property="uiMobile" />
+    <result column="ui_email" jdbcType="VARCHAR" property="uiEmail" />
+    <result column="ui_avatar" jdbcType="VARCHAR" property="uiAvatar" />
+    <result column="ui_status" jdbcType="CHAR" property="uiStatus" />
+    <result column="ui_create_by" jdbcType="VARCHAR" property="uiCreateBy" />
+    <result column="ui_create_time" jdbcType="TIMESTAMP" property="uiCreateTime" />
+    <result column="ui_update_by" jdbcType="VARCHAR" property="uiUpdateBy" />
+    <result column="ui_update_time" jdbcType="TIMESTAMP" property="uiUpdateTime" />
+    <result column="ui_version" jdbcType="INTEGER" property="uiVersion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ui_user_id, ui_username, ui_password, ui_salt, ui_user_desc, ui_sex, ui_mobile, ui_email,
+    ui_avatar, ui_status, ui_create_by, ui_create_time, ui_update_by, ui_update_time,
+    ui_version
+  </sql>
+  <select id="selectByUserName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_info
+    where ui_username = #{username}
+  </select>
+  <select id="selectAllUserInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_info
+  </select>
+</mapper>

@@ -2,8 +2,9 @@ package com.mc.vat.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mc.vat.constant.RetMsg;
-import com.mc.vat.entity.Admin;
+import com.mc.vat.entity.UserInfo;
 import com.mc.vat.entity.req.User;
+import com.mc.vat.service.IUserInfoService;
 import com.mc.vat.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -11,11 +12,14 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author kai
@@ -23,8 +27,11 @@ import java.util.Arrays;
  */
 @Slf4j
 @RestController
-@RequestMapping(value = "/mc/admin")
-public class AdminController {
+@RequestMapping(value = "/mc/user")
+public class UserController {
+
+    @Autowired
+    private IUserInfoService userInfoService;
 
     /**
      * 用户登陆
@@ -71,14 +78,18 @@ public class AdminController {
      */
     @GetMapping("/info")
     public JSONObject getLoginInfo() {
-        Admin admin = (Admin) SecurityUtils.getSubject().getPrincipal();
-        log.info("获取当前用户信息 -> {}", admin);
+        UserInfo user = (UserInfo) SecurityUtils.getSubject().getPrincipal();
+        log.info("获取当前用户信息 -> {}", user);
         JSONObject obj = new JSONObject();
-        obj.put("name", admin.getUsername());
-        obj.put("email", admin.getEmail());
-        obj.put("introduction", admin.getMotto());
-        obj.put("avatar", "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
-        obj.put("roles", Arrays.asList(new String[]{"admin", "delver"}));
+        obj.put("name", user.getUiUsername());
+        obj.put("email", user.getUiEmail());
+        obj.put("introduction", user.getUiUserDesc());
+        obj.put("avatar", user.getUiAvatar());
+
+        List<String> roleCodes = userInfoService.getRoleInfoByUsername(user.getUiUsername())
+                .stream().map(role -> role.getRiRoleCode()).collect(Collectors.toList());
+        log.info("当前用户的角色信息 -> {}", roleCodes);
+        obj.put("roles", roleCodes);
         return ResultUtil.retSuccess(obj);
     }
 
@@ -87,9 +98,9 @@ public class AdminController {
      * @return
      */
     @RequestMapping(value = "/unlogged")
-    public JSONObject unlogged() {
-        Admin admin = (Admin) SecurityUtils.getSubject().getPrincipal();
-        log.info("用户未登录 -> {}", admin);
+    public JSONObject unLogged() {
+        UserInfo user = (UserInfo) SecurityUtils.getSubject().getPrincipal();
+        log.info("用户未登录 -> {}", user);
         return ResultUtil.resp(RetMsg.RET_E202);
     }
 
@@ -99,8 +110,8 @@ public class AdminController {
      */
     @RequestMapping(value = "/unauthorized")
     public JSONObject unauthorized(){
-        Admin admin = (Admin) SecurityUtils.getSubject().getPrincipal();
-        log.info("用户权限不足 -> {}", admin);
+        UserInfo user = (UserInfo) SecurityUtils.getSubject().getPrincipal();
+        log.info("用户权限不足 -> {}", user);
         return ResultUtil.resp(RetMsg.RET_E203);
     }
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mc.vat.mapper.UserRoleTableMapper">
+  <resultMap id="BaseResultMap" type="com.mc.vat.entity.UserRoleTable">
+    <id column="urt_id" jdbcType="INTEGER" property="urtId" />
+    <result column="urt_user_id" jdbcType="INTEGER" property="urtUserId" />
+    <result column="urt_role_id" jdbcType="INTEGER" property="urtRoleId" />
+    <result column="urt_enabled" jdbcType="CHAR" property="urtEnabled" />
+    <result column="urt_create_by" jdbcType="VARCHAR" property="urtCreateBy" />
+    <result column="urt_create_time" jdbcType="TIMESTAMP" property="urtCreateTime" />
+    <result column="urt_update_by" jdbcType="VARCHAR" property="urtUpdateBy" />
+    <result column="urt_update_time" jdbcType="TIMESTAMP" property="urtUpdateTime" />
+    <result column="urt_version" jdbcType="INTEGER" property="urtVersion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    urt_id, urt_user_id, urt_role_id, urt_enabled, urt_create_by, urt_create_time, urt_update_by,
+    urt_update_time, urt_version
+  </sql>
+  <select id="selectRoleIdsByUserIds" resultType="java.lang.Integer">
+    select urt_role_id
+    from user_role_table
+    <where>
+      <if test = "userIds != null and userIds.size != 0">
+        and urt_user_id in
+        <foreach collection="userIds" item="userId" index="index" open="(" close=")" separator=",">
+          #{userId}
+        </foreach>
+      </if>
+    </where>
+  </select>
+  <select id="selectRoleIdsByUserId" resultType="java.lang.Integer">
+    select urt_role_id
+    from user_role_table
+    where urt_user_id = #{userId}
+  </select>
+</mapper>

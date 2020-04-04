@@ -1,5 +1,6 @@
 package com.mc.vat.controller;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/mc")
 public class IndexController {
+    
+    @RequiresPermissions("XTJK")
     @GetMapping("/index")
     public String index() {
         return "SUCCESS";

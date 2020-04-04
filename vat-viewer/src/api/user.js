@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/mc/admin/login',
+    url: '/mc/user/login',
     method: 'post',
     data
   })
@@ -10,14 +10,14 @@ export function login(data) {
 
 export function getInfo() {
   return request({
-    url: '/mc/admin/info',
+    url: '/mc/user/info',
     method: 'get'
   })
 }
 
 export function logout() {
   return request({
-    url: '/mc/admin/logout',
+    url: '/mc/user/logout',
     method: 'post'
   })
 }

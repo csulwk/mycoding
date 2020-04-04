@@ -37,12 +37,11 @@ public class ShiroConfig {
 
         // authc:所有url都必须认证通过才可以访问; anon:所有url都可以匿名访问
         Map<String, String> filterMap = new HashMap<>(8);
-        filterMap.put("/mc/admin/unlogged", "anon");
-        filterMap.put("/mc/admin/unauthorized", "anon");
-        filterMap.put("/mc/admin/login", "anon");
-        filterMap.put("/mc/admin/logout", "authc");
-        filterMap.put("/mc/admin/info", "authc");
-        filterMap.put("/mc/user/*", "authc");
+        filterMap.put("/mc/user/unlogged", "anon");
+        filterMap.put("/mc/user/unauthorized", "anon");
+        filterMap.put("/mc/user/login", "anon");
+        filterMap.put("/mc/user/logout", "authc");
+        filterMap.put("/mc/user/info", "authc");
         filterMap.put("/**", "authc");
 
         shiroFilterFactoryBean.setLoginUrl("/mc/admin/unlogged");

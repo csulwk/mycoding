@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mc.vat.mapper.PermissionInfoMapper">
+  <resultMap id="BaseResultMap" type="com.mc.vat.entity.PermissionInfo">
+    <id column="pi_perm_id" jdbcType="INTEGER" property="piPermId" />
+    <result column="pi_perm_code" jdbcType="VARCHAR" property="piPermCode" />
+    <result column="pi_perm_desc" jdbcType="VARCHAR" property="piPermDesc" />
+    <result column="pi_parent_id" jdbcType="INTEGER" property="piParentId" />
+    <result column="pi_status" jdbcType="CHAR" property="piStatus" />
+    <result column="pi_create_by" jdbcType="VARCHAR" property="piCreateBy" />
+    <result column="pi_create_time" jdbcType="TIMESTAMP" property="piCreateTime" />
+    <result column="pi_update_by" jdbcType="VARCHAR" property="piUpdateBy" />
+    <result column="pi_update_time" jdbcType="TIMESTAMP" property="piUpdateTime" />
+    <result column="pi_version" jdbcType="INTEGER" property="piVersion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    pi_perm_id, pi_perm_code, pi_perm_desc, pi_parent_id, pi_status, pi_create_by, pi_create_time,
+    pi_update_by, pi_update_time, pi_version
+  </sql>
+  <select id="selectByPermIds" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from permission_info
+    <where>
+      <if test = "permIds != null and permIds.size != 0">
+        and pi_perm_id in
+        <foreach collection="permIds" item="permId" index="index" open="(" close=")" separator=",">
+          #{permId}
+        </foreach>
+      </if>
+    </where>
+  </select>
+  <select id="selectAllPermissionInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from permission_info
+  </select>
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mc.vat.mapper.RoleInfoMapper">
+  <resultMap id="BaseResultMap" type="com.mc.vat.entity.RoleInfo">
+    <id column="ri_role_id" jdbcType="INTEGER" property="riRoleId" />
+    <result column="ri_role_code" jdbcType="VARCHAR" property="riRoleCode" />
+    <result column="ri_role_desc" jdbcType="VARCHAR" property="riRoleDesc" />
+    <result column="ri_status" jdbcType="CHAR" property="riStatus" />
+    <result column="ri_create_by" jdbcType="VARCHAR" property="riCreateBy" />
+    <result column="ri_create_time" jdbcType="TIMESTAMP" property="riCreateTime" />
+    <result column="ri_update_by" jdbcType="VARCHAR" property="riUpdateBy" />
+    <result column="ri_update_time" jdbcType="TIMESTAMP" property="riUpdateTime" />
+    <result column="ri_version" jdbcType="INTEGER" property="riVersion" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ri_role_id, ri_role_code, ri_role_desc, ri_status, ri_create_by, ri_create_time,
+    ri_update_by, ri_update_time, ri_version
+  </sql>
+  <select id="selectByRoleIds" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from role_info
+  <where>
+    <if test = "roleIds != null and roleIds.size != 0">
+      and ri_role_id in
+      <foreach collection="roleIds" item="roleId" index="index" open="(" close=")" separator=",">
+        #{roleId}
+      </foreach>
+    </if>
+  </where>
+  </select>
+  <select id="selectAllRoleInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from role_info
+  </select>
+</mapper>

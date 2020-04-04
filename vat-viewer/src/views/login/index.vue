@@ -52,14 +52,13 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('请输入正确的用户名'))
+      if (value.length < 4) {
+        callback(new Error('登录名称不能小于4位'))
       } else {
         callback()
       }
