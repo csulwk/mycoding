@@ -11,9 +11,9 @@
 ## Framework
 ```
 mycoding
-├─ mycoding-server  
+├─ vat-server  
 │  └─ src                -- the front end
-├─ mycoding-viewer  
+├─ vat-viewer  
 │  └─ src                -- the back end
 ├─ .gitignore
 └─ README.md
