@@ -7,6 +7,7 @@ import com.mc.vat.mapper.UserInfoMapper;
 import com.mc.vat.service.IUserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -40,8 +41,9 @@ public class CodingRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         UserInfo user = (UserInfo) principalCollection.getPrimaryPrincipal();
         log.info("登录用户 -> {}", user);
+        SecurityUtils.getSubject().getSession().setAttribute("username", user.getUiUsername());
 
-        //此处把当前subject对应的所有角色信息交给shiro，调用hasRole的时候就根据这些role信息判断
+        // 此处把当前subject对应的所有角色信息交给shiro，调用hasRole的时候就根据这些role信息判断
         List<RoleInfo> roles = userInfoService.getRoleInfoByUsername(user.getUiUsername());
         log.info("角色验证 -> {}", roles);
         Set<String> roleCodes = new HashSet<>(roles.size());
@@ -49,8 +51,9 @@ public class CodingRealm extends AuthorizingRealm {
             roleCodes.add(role.getRiRoleCode());
         }
         authorizationInfo.setRoles(roleCodes);
+        SecurityUtils.getSubject().getSession().setAttribute("roles", roleCodes);
 
-        //此处把当前subject对应的权限信息交给shiro，当调用hasPermission的时候就会根据这些信息判断
+        // 此处把当前subject对应的权限信息交给shiro，当调用hasPermission的时候就会根据这些信息判断
         List<PermissionInfo> perms = userInfoService.getPermissionInfoByUsername(user.getUiUsername());
         log.info("权限验证 -> {}", perms);
         Set<String> permCodes = new HashSet<>(perms.size());
@@ -58,6 +61,7 @@ public class CodingRealm extends AuthorizingRealm {
             permCodes.add(perm.getPiPermCode());
         }
         authorizationInfo.setStringPermissions(permCodes);
+        SecurityUtils.getSubject().getSession().setAttribute("perms", permCodes);
         return authorizationInfo;
     }
 
@@ -79,7 +83,7 @@ public class CodingRealm extends AuthorizingRealm {
             throw new RuntimeException("用户不存在");
         }
 
-        //authenticationInfo信息交个shiro，调用login的时候会自动比较这里的token和authenticationInfo
+        // authenticationInfo信息交个shiro，调用login的时候会自动比较这里的token和authenticationInfo
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user,
                 user.getUiPassword(), this.getName());
         return authenticationInfo;
