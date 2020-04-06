@@ -97,93 +97,35 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/nested',
+    path: '/user',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
+    redirect: '/user/',
+    name: '',
+    meta: { title: '系统管理', icon: 'password' },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        path: 'admin/user',
+        name: '用户管理',
+        component: () => import('@/views/authority/user/list'),
+        meta: { title: '用户管理', icon: '' },
+        menu: 'user'
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
-      }
-    ]
-  },
-  {
-    path: 'admin',
-    component: Layout,
-    children: [
+        path: 'admin/role',
+        name: '角色管理',
+        component: () => import('@/views/authority/role/list'),
+        meta: { title: '角色管理', icon: '' },
+        menu: 'role'
+      },
       {
-        path: 'https://www.baidu.com/',
-        meta: { title: 'admin', icon: 'link', roles: ['admin'] }
+        path: 'admin/permission',
+        name: '权限管理',
+        component: () => import('@/views/authority/perm/list'),
+        meta: { title: '权限管理', icon: '' },
+        menu: 'permission'
       }
     ]
   },
-  {
-    path: 'delver',
-    component: Layout,
-    children: [
-      {
-        path: 'https://www.baidu.com/',
-        meta: { title: 'delver', icon: 'link', roles: ['delver'] }
-      }
-    ]
-  },
-  {
-    path: 'tester',
-    component: Layout,
-    children: [
-      {
-        path: 'https://www.baidu.com/',
-        meta: { title: 'tester', icon: 'link', roles: ['tester'] }
-      }
-    ]
-  },
-
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

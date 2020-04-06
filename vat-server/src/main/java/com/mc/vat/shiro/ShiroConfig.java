@@ -40,6 +40,7 @@ public class ShiroConfig {
         filterMap.put("/mc/user/unlogged", "anon");
         filterMap.put("/mc/user/unauthorized", "anon");
         filterMap.put("/mc/user/login", "anon");
+        filterMap.put("/auth/**", "anon");
         filterMap.put("/mc/user/logout", "authc");
         filterMap.put("/mc/user/info", "authc");
         filterMap.put("/**", "authc");

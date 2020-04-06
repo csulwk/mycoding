@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,6 +89,11 @@ public class UserController {
                 .stream().map(role -> role.getRiRoleCode()).collect(Collectors.toList());
         log.info("当前用户的角色信息 -> {}", roleCodes);
         obj.put("roles", roleCodes);
+
+        List<String> permCodes = userInfoService.getPermissionInfoByUsername(user.getUiUsername())
+                .stream().map(perm -> perm.getPiPermCode()).collect(Collectors.toList());
+        log.info("当前用户的权限信息 -> {}", permCodes);
+        obj.put("perms", permCodes);
         return ResultUtil.retSuccess(obj);
     }
 
