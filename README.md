@@ -11,10 +11,10 @@
 ## Framework
 ```
 mycoding
-├─ vat-server  
-│  └─ src                -- the front end
-├─ vat-viewer  
-│  └─ src                -- the back end
+├─ vat-server            -- the back end
+│  └─ src                
+├─ vat-viewer            -- the front end
+│  └─ src                
 ├─ .gitignore
 └─ README.md
 ```
