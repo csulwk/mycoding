@@ -24,6 +24,11 @@ public enum RetMsg {
     RET_E202(CodeSet.CODE_E202, "用户未登录"),
     RET_E203(CodeSet.CODE_E203, "用户权限不足"),
     /**
+     * 查询结果异常
+     */
+    RET_E301(CodeSet.CODE_E301, "查询结果为空"),
+    RET_E302(CodeSet.CODE_E309, "查询异常"),
+    /**
      * 程序特殊异常
      */
     ERROR(CodeSet.CODE_E999, "未定义异常");

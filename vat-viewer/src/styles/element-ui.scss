@@ -47,3 +47,18 @@
 .el-range-separator {
   box-sizing: content-box;
 }
+
+.el-table th {
+  background-color: #f8f8f8;
+  border: 1px solid #eee;
+  color: #444;
+  padding: 8px 5px;
+  white-space: nowrap
+}
+
+.el-table td {
+  background-color: #ffffff;
+  border: 1px solid #eee;
+  color: #555;
+  padding: 5px;
+}

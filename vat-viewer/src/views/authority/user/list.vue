@@ -31,9 +31,18 @@
           {{ scope.row.uiEmail }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="用户状态" >
+      <el-table-column
+        align="center"
+        label="用户状态"
+        width="180"
+      >
         <template slot-scope="scope">
-          {{ scope.row.uiStatus }}
+          <el-tag
+            :type="scope.row.uiStatus === '0' ? 'success' : 'danger'"
+            disable-transitions
+          >
+            <span v-html="formatter(scope.row.uiStatus)"></span>
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column v-if="hasPerm('YHGL')" align="center" label="管理" width="240">
@@ -144,30 +153,10 @@ export default {
       this.tempUser.password = ''
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
+    },
+    formatter(val) {
+      return val === '0' ? '正常' : '失效'
     }
   }
 }
 </script>
-<style>
-  .el-table {
-    border: 1px #ccc;
-    border-collapse: collapse;
-    font-size: 12px;
-    line-height: normal
-  }
-  .el-table th {
-    background-color: #f8f8f8;
-    border: 1px solid #eee;
-    color: #444;
-    padding: 8px 5px;
-    white-space: nowrap
-  }
-
-  .el-table td {
-    background-color: #ffffff;
-    border: 1px solid #eee;
-    color: #555;
-    padding: 5px;
-    text-align: center
-  }
-</style>
