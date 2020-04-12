@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getInfo() {
+export function getAllPerm() {
   return request({
     url: '/auth/perm/info',
     method: 'get'

@@ -25,8 +25,21 @@
         label="权限名称"
         align="center"
         width="180"
-        :formatter="formatter"
       />
+      <el-table-column
+              align="center"
+              label="权限状态"
+              width="180"
+      >
+        <template slot-scope="scope">
+          <el-tag
+                  :type="scope.row.piStatus === '0' ? 'success' : 'danger'"
+                  disable-transitions
+          >
+            <span v-html="formatter(scope.row.piStatus)"></span>
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column
         label="操作"
         align="left"
@@ -49,7 +62,7 @@
 </template>
 
 <script>
-import { getInfo } from '@/api/myperm'
+import { getAllPerm } from '@/api/myperm'
 export default {
   name: 'PermList',
   data() {
@@ -79,7 +92,7 @@ export default {
     fetchPerm() {
       // 查询列表
       this.listLoading = true
-      getInfo().then(resp => {
+      getAllPerm().then(resp => {
         const { data } = resp
         console.log('data: ' + data)
         this.tableData = data
@@ -92,8 +105,8 @@ export default {
     handleDelete(index, row) {
       console.log(index, row)
     },
-    formatter(row, column) {
-      return row.piPermDesc
+    formatter(val) {
+      return val === '0' ? '正常' : '失效'
     }
   }
 }

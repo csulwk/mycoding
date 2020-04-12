@@ -3,7 +3,8 @@
     <div class="tool-bar">
       <el-form>
         <el-form-item>
-          <el-button v-if="hasPerm('YHGL')" size="mini" type="primary" icon="plus" @click="showCreate">添加
+          <el-button v-if="hasPerm('YHGL')" size="mini" type="primary" icon="plus" @click="showCreate">
+            添加用户
           </el-button>
         </el-form-item>
       </el-form>
@@ -58,7 +59,11 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog
+      :title="textMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+      @open='getUserRole'
+    >
       <el-form
         class="small-space"
         :model="tempUser"
@@ -66,37 +71,55 @@
         label-width="80px"
         style="width: 300px; margin-left:50px;"
       >
-        <el-form-item v-if="dialogStatus=='create'" label="用户名" required>
-          <el-input v-model="tempUser.username" type="text" />
+        <el-form-item v-if="dialogStatus=='create'" label="用户昵称" required>
+          <el-input v-model="tempUser.uiUsername" type="text" />
         </el-form-item>
-        <el-form-item v-if="dialogStatus=='create'" label="密码" required>
-          <el-input v-model="tempUser.password" type="password" />
+        <el-form-item v-if="dialogStatus=='create'" label="用户密码" required>
+          <el-input v-model="tempUser.uiPassword" type="password" show-password />
         </el-form-item>
-        <el-form-item v-else label="新密码">
-          <el-input v-model="tempUser.password" type="password" placeholder="不填则表示不修改" />
+        <el-form-item v-else label="修改密码">
+          <el-input v-model="tempUser.uiPassword" type="password" placeholder="不填则表示不修改" />
         </el-form-item>
-        <el-form-item label="角色" required>
-          <el-select v-model="tempUser.roleId" placeholder="请选择">
+        <el-form-item label="用户性别" required>
+          <el-radio v-model="tempUser.uiSex" label="1">♂</el-radio>
+          <el-radio v-model="tempUser.uiSex" label="2">♀</el-radio>
+          <el-radio v-model="tempUser.uiSex" label="0">?</el-radio>
+        </el-form-item>
+        <el-form-item label="用户手机" required>
+          <el-input v-model="tempUser.uiMobile" type="text" />
+        </el-form-item>
+        <el-form-item label="用户邮箱" required>
+          <el-input v-model="tempUser.uiEmail" type="text" />
+        </el-form-item>
+        <el-form-item label="用户描述" required>
+          <el-input
+                  type="textarea"
+                  :rows="2"
+                  placeholder="请输入描述信息"
+                  v-model="tempUser.uiUserDesc">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="角色名称">
+          <el-select v-model="tempUser.roleId" placeholder="请选择" clearable style="display: inline">
             <el-option
-              v-for="item in roles"
-              :key="item.roleId"
-              :label="item.roleName"
-              :value="item.roleId"
+                    v-for="item in roles"
+                    :key="item.riRoleId"
+                    :label="item.riRoleDesc"
+                    :value="item.riRoleId"
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="昵称" required>
-          <el-input v-model="tempUser.nickname" type="text" />
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="onSubmitUser">添 加</el-button>
         <el-button @click="dialogFormVisible = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getInfo } from '@/api/myuser'
+import { getAllUser } from '@/api/myuser'
+import { getAllRole } from '@/api/myrole'
 export default {
   name: 'UserList',
   data() {
@@ -111,11 +134,13 @@ export default {
         create: '新建用户'
       },
       tempUser: {
-        username: '',
-        password: '',
-        nickname: '',
-        roleId: '',
-        userId: ''
+        uiUsername: '',
+        uiPassword: '',
+        uiUserDesc: '',
+        uiSex: '0',
+        uiMobile: '',
+        uiEmail: '',
+        roleId: ''
       }
     }
   },
@@ -123,10 +148,17 @@ export default {
     this.fetchUser()
   },
   methods: {
+    getUserRole() {
+      getAllRole().then(resp => {
+        this.roles = resp.data
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     fetchUser() {
       // 查询列表
       this.listLoading = true
-      getInfo().then(resp => {
+      getAllUser().then(resp => {
         const { data } = resp
         console.log('data: ' + data)
         this.list = data
@@ -156,7 +188,15 @@ export default {
     },
     formatter(val) {
       return val === '0' ? '正常' : '失效'
+    },
+    onSubmitUser() {
+      this.$message(this.tempUser)
     }
   }
 }
 </script>
+<style>
+  .el-form--label-left .el-form-item__label {
+    text-align: right;
+  }
+</style>

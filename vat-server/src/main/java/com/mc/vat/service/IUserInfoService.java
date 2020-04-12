@@ -1,8 +1,10 @@
 package com.mc.vat.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
+import com.mc.vat.entity.req.UserRoleReq;
 
 import java.util.List;
 
@@ -39,5 +41,22 @@ public interface IUserInfoService {
      * @return 权限信息
      */
     List<PermissionInfo> getPermissionInfoByUsername(String username);
+
+    /**
+     * 添加用户信息
+     * @param req 用户信息
+     */
+    JSONObject addUserAndRole(UserRoleReq req);
+
+    /**
+     * 更新用户信息
+     * @param req 新增用户信息
+     */
+    JSONObject updateUser(UserRoleReq req);
+    /**
+     * 根据用户名称删除用户信息
+     * @param username 用户名称
+     */
+    JSONObject deleteByUsername(String username);
 
 }

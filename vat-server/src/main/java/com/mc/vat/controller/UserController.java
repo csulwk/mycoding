@@ -63,7 +63,7 @@ public class UserController {
      * 用户登出
      * @return
      */
-    @RequestMapping("/logout")
+    @GetMapping("/logout")
     public JSONObject logout() {
         Subject subject = SecurityUtils.getSubject();
         log.info("获取当前用户信息 -> {}", JSONObject.toJSON(subject.getPrincipal()));
@@ -101,7 +101,7 @@ public class UserController {
      * 用户未登录返回信息
      * @return
      */
-    @RequestMapping(value = "/unlogged")
+    @GetMapping(value = "/unlogged")
     public JSONObject unLogged() {
         UserInfo user = (UserInfo) SecurityUtils.getSubject().getPrincipal();
         log.info("用户未登录 -> {}", user);
@@ -112,7 +112,7 @@ public class UserController {
      * 用户权限不足返回信息
      * @return
      */
-    @RequestMapping(value = "/unauthorized")
+    @GetMapping(value = "/unauthorized")
     public JSONObject unauthorized(){
         UserInfo user = (UserInfo) SecurityUtils.getSubject().getPrincipal();
         log.info("用户权限不足 -> {}", user);

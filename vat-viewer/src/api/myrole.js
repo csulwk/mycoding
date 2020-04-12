@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getInfo() {
+export function getAllRole() {
   return request({
     url: '/auth/role/info',
     method: 'get'

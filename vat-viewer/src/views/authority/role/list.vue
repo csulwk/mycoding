@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { getInfo } from '@/api/myrole'
+import { getAllRole } from '@/api/myrole'
 export default {
   name: 'RoleList',
   data() {
@@ -92,7 +92,7 @@ export default {
     fetchRole() {
       // 查询列表
       this.listLoading = true
-      getInfo().then(resp => {
+      getAllRole().then(resp => {
         const { data } = resp
         console.log('data: ' + data)
         this.tableData = data

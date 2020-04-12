@@ -25,4 +25,22 @@ public interface UserInfoMapper {
      * @return 用户信息
      */
     List<UserInfo> selectAllUserInfo();
+
+    /**
+     * 添加用户信息
+     * @param userInfo 用户信息
+     */
+    void saveUser(UserInfo userInfo);
+
+    /**
+     * 更新用户信息
+     * @param userInfo 用户信息
+     */
+    void updateUser(UserInfo userInfo);
+
+    /**
+     * 根据用户ID删除用户
+     * @param userId 用户ID
+     */
+    void deleteByUserId(@Param("userId") Integer userId);
 }

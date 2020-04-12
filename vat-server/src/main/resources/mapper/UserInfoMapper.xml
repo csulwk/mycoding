@@ -34,4 +34,51 @@
     <include refid="Base_Column_List" />
     from user_info
   </select>
+  <insert id="saveUser" parameterType="com.mc.vat.entity.UserInfo"  keyProperty="uiUserId" useGeneratedKeys="true">
+    insert into user_info(
+      ui_username, ui_password, ui_user_desc, ui_sex, ui_mobile, ui_email,ui_avatar,ui_status,ui_create_by,ui_update_by
+    )
+    values (
+      #{uiUsername}, #{uiPassword}, #{uiUserDesc}, #{uiSex},
+      #{uiMobile}, #{uiEmail}, #{uiAvatar}, #{uiStatus}, #{uiCreateBy},#{uiUpdateBy}
+    )
+  </insert>
+  <update id="updateUser" parameterType="com.mc.vat.entity.UserInfo">
+    update user_info set ui_version = ui_version + 1
+    <if test="uiUsername!=null and uiUsername!=''">
+      ,ui_username = #{uiUsername}
+    </if>
+    <if test="uiPassword!=null and uiPassword!=''">
+      ,ui_password = #{uiPassword}
+    </if>
+    <if test="uiUserDesc!=null and uiUserDesc!=''">
+      ,ui_user_desc = #{uiUserDesc}
+    </if>
+    <if test="uiSex!=null and uiSex!=''">
+      ,ui_sex = #{uiSex}
+    </if>
+    <if test="uiMobile!=null and uiMobile!=''">
+      ,ui_mobile = #{uiMobile}
+    </if>
+    <if test="uiEmail!=null and uiEmail!=''">
+      ,ui_email = #{uiEmail}
+    </if>
+    <if test="uiAvatar!=null and uiAvatar!=''">
+      ,ui_avatar = #{uiAvatar}
+    </if>
+    <if test="uiStatus!=null and uiStatus!=''">
+      ,ui_status = #{uiStatus}
+    </if>
+    <if test="uiCreateBy!=null and uiCreateBy!=''">
+      ,ui_create_by = #{uiCreateBy}
+    </if>
+    <if test="uiUpdateBy!=null and uiUpdateBy!=''">
+      ,ui_update_by = #{uiUpdateBy}
+    </if>
+    where ui_user_id = #{uiUserId} and ui_version = #{uiVersion}
+  </update>
+  <update id="deleteByUserId">
+    update user_info set ui_status = 1
+    where ui_user_id = #{userId}
+  </update>
 </mapper>

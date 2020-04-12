@@ -2,11 +2,8 @@ package com.mc.vat.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mc.vat.constant.RetMsg;
-import com.mc.vat.entity.PermissionInfo;
-import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
-import com.mc.vat.service.IPermissionInfoService;
-import com.mc.vat.service.IRoleInfoService;
+import com.mc.vat.entity.req.UserRoleReq;
 import com.mc.vat.service.IUserInfoService;
 import com.mc.vat.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,5 +60,26 @@ public class QueryUserController {
         List<String> result = userInfoService.getPermissionInfoByUsername(username)
                 .stream().map(perm -> perm.getPiPermCode()).collect(Collectors.toList());
         return ResultUtil.retSuccess(result);
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public JSONObject addUserAndRole(@RequestBody UserRoleReq req) {
+        log.info("根据输入参数添加用户 -> {}" , JSONObject.toJSONString(req));
+        JSONObject result = userInfoService.addUserAndRole(req);
+        return result;
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public JSONObject updateUser(@RequestBody UserRoleReq req) {
+        log.info("根据输入参数更新用户 -> {}" , JSONObject.toJSONString(req));
+        JSONObject result = userInfoService.updateUser(req);
+        return result;
+    }
+
+    @RequestMapping(value = "/delete/{username}", method = RequestMethod.DELETE)
+    public JSONObject updateUser(@PathVariable(value = "username", required = true) String username) {
+        log.info("根据用户名称删除用户 -> {}" , JSONObject.toJSONString(username));
+        JSONObject result = userInfoService.deleteByUsername(username);
+        return result;
     }
 }
