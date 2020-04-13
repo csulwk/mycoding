@@ -117,7 +117,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
         src.setUiUsername(des.getUsername());
         src.setUiPassword(des.getPassword());
         src.setUiUserDesc(des.getDesc());
-        src.setUiSex(des.getSex() == null ? des.getSex() : 0);
+        src.setUiSex(des.getSex() == null ?  0: des.getSex());
         src.setUiMobile(des.getMobile());
         src.setUiEmail(des.getEmail());
         src.setUiAvatar(des.getAvatar());
