@@ -4,7 +4,7 @@
       <el-form>
         <el-form-item>
           <el-button v-if="hasPerm('YHGL')" size="mini" type="primary" icon="plus" @click="showCreate">
-            添加用户
+            新增
           </el-button>
         </el-form-item>
       </el-form>

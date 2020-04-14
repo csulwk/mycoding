@@ -1,6 +1,7 @@
 package com.mc.vat.mapper;
 
 import com.mc.vat.entity.UserInfo;
+import com.mc.vat.entity.resp.UserRoleResp;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +20,8 @@ public interface UserInfoMapper {
      * @return 用户信息
      */
     UserInfo selectByUserName(@Param("username") String username);
+
+    List<UserRoleResp> getAllUserAllRole();
 
     /**
      * 获取所有用户信息

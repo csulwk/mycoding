@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mc.vat.constant.RetMsg;
 import com.mc.vat.entity.UserInfo;
 import com.mc.vat.entity.req.UserRoleReq;
+import com.mc.vat.entity.resp.UserRoleResp;
 import com.mc.vat.service.IUserInfoService;
 import com.mc.vat.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,13 @@ public class QueryUserController {
     @Autowired
     public QueryUserController(IUserInfoService userInfoService) {
         this.userInfoService = userInfoService;
+    }
+
+    @RequestMapping(value = "/roles", method = RequestMethod.GET)
+    public JSONObject queryUserRole() {
+        log.info("根据用户名称查询用户详细信息");
+        List<UserRoleResp> result = userInfoService.getAllUserAllRole();
+        return ResultUtil.retSuccess(result);
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)

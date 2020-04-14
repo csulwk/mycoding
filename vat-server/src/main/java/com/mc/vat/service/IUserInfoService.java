@@ -5,6 +5,7 @@ import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
 import com.mc.vat.entity.req.UserRoleReq;
+import com.mc.vat.entity.resp.UserRoleResp;
 
 import java.util.List;
 
@@ -58,5 +59,7 @@ public interface IUserInfoService {
      * @param username 用户名称
      */
     JSONObject deleteByUsername(String username);
+
+    List<UserRoleResp> getAllUserAllRole();
 
 }

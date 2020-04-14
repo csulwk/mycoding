@@ -6,6 +6,7 @@ import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
 import com.mc.vat.entity.req.UserRoleReq;
+import com.mc.vat.entity.resp.UserRoleResp;
 import com.mc.vat.mapper.*;
 import com.mc.vat.service.IUserInfoService;
 import com.mc.vat.util.ResultUtil;
@@ -106,6 +107,12 @@ public class UserInfoServiceImpl implements IUserInfoService {
         userInfoMapper.deleteByUserId(user.getUiUserId());
         log.info("删除参数 -> {}；删除用户ID -> {}", username, user.getUiUserId());
         return ResultUtil.retSuccess().fluentPut("userId", user.getUiUserId());
+    }
+
+    @Override
+    public List<UserRoleResp> getAllUserAllRole() {
+        List<UserRoleResp> ur = userInfoMapper.getAllUserAllRole();
+        return ur;
     }
 
     /**
