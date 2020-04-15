@@ -31,7 +31,7 @@ service.interceptors.response.use(
     const res = response.data
     console.log('request.js --> res:' + res)
     if (res.retCode && res.retCode !== '000000') {
-      if (res.retCode === 50014) {
+      if (res.retCode === 'E00202') {
         // 未登录
         Message({
           message: 'request.js --> res: + res',

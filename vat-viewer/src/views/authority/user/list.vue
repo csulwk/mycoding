@@ -19,49 +19,42 @@
     >
       <el-table-column align="center" label="用户名称" width="120">
         <template slot-scope="scope">
-          {{ scope.row.uiUsername }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="性别" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.uiSex === 1 ? '男' : (scope.row.uiSex === 2 ? '女' : '未知') }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="联系方式" width="120">
-        <template slot-scope="scope">
-          {{ scope.row.uiMobile }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="电子邮箱" width="160">
-        <template slot-scope="scope">
-          {{ scope.row.uiEmail }}
+          {{ scope.row.user.uiUsername }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="用户描述">
         <template slot-scope="scope">
-          {{ scope.row.uiUserDesc }}
+          {{ scope.row.user.uiUserDesc }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="用户状态" width="100">
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.uiStatus === '0' ? 'success' : 'danger'"
+            :type="scope.row.user.uiStatus === '0' ? 'success' : 'danger'"
             disable-transitions
-          >{{ formatterStatus(scope.row.uiStatus) }}
+          >{{ formatterStatus(scope.row.user.uiStatus) }}
           </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="用户角色" width="140">
+        <template slot-scope="scope">
+          <div v-if="scope.row.roles.length > 0">
+            <span v-for="role in scope.row.roles" :key="role">{{ role.riRoleDesc }} </span>
+          </div>
+          <div v-else >无</div>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" width="180">
         <template slot-scope="scope">
-          {{ formatterTime(scope.row.uiCreateTime) }}
+          {{ formatterTime(scope.row.user.uiCreateTime) }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="最近修改时间" width="180">
         <template slot-scope="scope">
-          {{ formatterTime(scope.row.uiUpdateTime) }}
+          {{ formatterTime(scope.row.user.uiUpdateTime) }}
         </template>
       </el-table-column>
-      <el-table-column prop="uiVersion" label="版本" width="60">
+      <el-table-column prop="user.uiVersion" label="版本" width="60">
       </el-table-column>
       <el-table-column v-if="hasPerm('YHGL')" align="center" label="管理" width="160">
         <template slot-scope="scope">
@@ -121,10 +114,9 @@
   </div>
 </template>
 <script>
-import { getAllUser } from '@/api/myuser'
+import { getUserRoles, addUser, updateUser, deleteUser } from '@/api/myuser'
 import { getAllRole } from '@/api/myrole'
 import { parseTime } from '@/utils/index.js'
-import axios from 'axios'
 export default {
   name: 'UserList',
   data() {
@@ -164,7 +156,7 @@ export default {
     fetchUser() {
       // 查询列表
       this.listLoading = true
-      getAllUser().then(resp => {
+      getUserRoles().then(resp => {
         const { data } = resp
         console.log('data: ' + data)
         this.list = data
@@ -185,15 +177,15 @@ export default {
       this.dialogFormVisible = true
     },
     showUpdate($index) {
-      const user = this.list[$index]
-      this.tempUser.username = user.uiUsername
+      const data = this.list[$index]
+      this.tempUser.username = data.user.uiUsername
       this.tempUser.password = ''
-      this.tempUser.sex = user.uiSex + ''
-      this.tempUser.mobile = user.uiMobile
-      this.tempUser.email = user.uiEmail
-      this.tempUser.desc = user.uiUserDesc
-      this.tempUser.status = user.uiStatus === '0'
-      this.tempUser.roleId = 1
+      this.tempUser.sex = data.user.uiSex + ''
+      this.tempUser.mobile = data.user.uiMobile
+      this.tempUser.email = data.user.uiEmail
+      this.tempUser.desc = data.user.uiUserDesc
+      this.tempUser.status = data.user.uiStatus === '0'
+      this.tempUser.roleId = data.roles.length === 0 ? '' : data.roles[0].riRoleId
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
     },
@@ -203,12 +195,8 @@ export default {
         showCancelButton: false,
         type: 'warning'
       }).then(() => {
-        const user = this.list[$index]
-        user.uiUserDesc = '1'
-        axios({
-          url: process.env.VUE_APP_BASE_API + 'user/delete/' + user.uiUsername,
-          method: 'delete'
-        }).then(() => {
+        const data = this.list[$index]
+        deleteUser(data.user.uiUsername).then(() => {
           this.fetchUser()
         }).catch(() => {
           this.$message.error('删除失败')
@@ -225,15 +213,24 @@ export default {
       return parseTime(val)
     },
     onSubmitUser() {
-      this.$message(JSON.stringify(this.tempUser))
+      this.tempUser.status = this.tempUser.status === true ? '0' : '1'
+      addUser(this.tempUser).then(() => {
+        this.dialogFormVisible = false
+        this.$message({
+          message: '添加成功',
+          type: 'success',
+          duration: 1 * 1000,
+          onClose: () => {
+            this.fetchUser()
+          }
+        })
+      }).catch(() => {
+        this.$message.error('添加失败')
+      })
     },
     onUpdateUser() {
       this.tempUser.status = this.tempUser.status === true ? '0' : '1'
-      axios({
-        url: process.env.VUE_APP_BASE_API + 'user/update',
-        method: 'put',
-        data: this.tempUser
-      }).then(() => {
+      updateUser(this.tempUser).then(() => {
         this.dialogFormVisible = false
         this.$message({
           message: '修改成功',
@@ -244,7 +241,7 @@ export default {
           }
         })
       }).catch(() => {
-        this.$message.error('删除失败')
+        this.$message.error('修改失败')
       })
     }
   }

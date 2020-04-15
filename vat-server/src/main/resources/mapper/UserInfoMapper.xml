@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mc.vat.mapper.UserInfoMapper">
-  <resultMap id="BaseResultMap" type="com.mc.vat.entity.UserInfo">
+  <resultMap id="UserMap" type="com.mc.vat.entity.UserInfo">
     <id column="ui_user_id" jdbcType="INTEGER" property="uiUserId" />
     <result column="ui_username" jdbcType="VARCHAR" property="uiUsername" />
     <result column="ui_password" jdbcType="VARCHAR" property="uiPassword" />
@@ -20,12 +20,7 @@
   </resultMap>
   <resultMap id="userRoleMap" type="com.mc.vat.entity.resp.UserRoleResp" >
     <!-- association: 处理一对一、多对一的情形 -->
-    <association property="user" javaType="com.mc.vat.entity.UserInfo">
-      <id column="ui_user_id" property="uiUserId"/>
-      <result column="ui_username" property="uiUsername"/>
-      <result column="ui_mobile" property="uiMobile" />
-      <result column="ui_status" property="uiStatus" />
-    </association>
+    <association property="user" resultMap="UserMap" />
     <!--collection: 处理一对多的情形-->
     <collection property="roles" ofType="com.mc.vat.entity.RoleInfo">
       <id column="ri_role_id" property="riRoleId" />
@@ -35,29 +30,29 @@
     </collection>
   </resultMap>
 
+  <sql id="Base_Column_List">
+    ui_user_id, ui_username, ui_password, ui_salt, ui_user_desc, ui_sex, ui_mobile, ui_email,
+    ui_avatar, ui_status, ui_create_by, ui_create_time, ui_update_by, ui_update_time,
+    ui_version
+  </sql>
+
   <select id="getAllUserAllRole" resultMap="userRoleMap">
     SELECT
-      ui.ui_user_id,ui.ui_username,ui.ui_mobile,ui.ui_status,
-      ri.ri_role_id,ri.ri_role_code,ri.ri_role_desc,ri.ri_status
+    <include refid="Base_Column_List" />,
+    ri.ri_role_id,ri.ri_role_code,ri.ri_role_desc,ri.ri_status
     FROM user_info ui
     LEFT JOIN user_role_table urt
     ON ui.ui_user_id = urt.urt_user_id
     LEFT JOIN role_info ri
     ON urt.urt_role_id = ri.ri_role_id
   </select>
-
-  <sql id="Base_Column_List">
-    ui_user_id, ui_username, ui_password, ui_salt, ui_user_desc, ui_sex, ui_mobile, ui_email,
-    ui_avatar, ui_status, ui_create_by, ui_create_time, ui_update_by, ui_update_time,
-    ui_version
-  </sql>
-  <select id="selectByUserName" resultMap="BaseResultMap">
+  <select id="selectByUserName" resultMap="UserMap">
     select
     <include refid="Base_Column_List" />
     from user_info
     where ui_username = #{username}
   </select>
-  <select id="selectAllUserInfo" resultMap="BaseResultMap">
+  <select id="selectAllUserInfo" resultMap="UserMap">
     select
     <include refid="Base_Column_List" />
     from user_info

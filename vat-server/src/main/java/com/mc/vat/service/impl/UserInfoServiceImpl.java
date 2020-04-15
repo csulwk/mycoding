@@ -80,6 +80,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
         if (user != null) {
             return ResultUtil.resp(RetMsg.RET_E204);
         }
+        user = new UserInfo();
         packageUser(user, req);
         userInfoMapper.saveUser(user);
         log.info("新增参数 -> {}；新增用户ID -> {}", req, user.getUiUserId());

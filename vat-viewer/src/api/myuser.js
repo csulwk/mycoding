@@ -7,17 +7,32 @@ export function getAllUser() {
   })
 }
 
-export function login(data) {
+export function getUserRoles() {
   return request({
-    url: '/auth/user/info',
-    method: 'post',
-    data
+    url: 'user/roles',
+    method: 'get'
   })
 }
 
-export function logout() {
+export function addUser(user) {
   return request({
-    url: '/auth/user/info',
-    method: 'post'
+    url: 'user/add',
+    method: 'post',
+    data: user
+  })
+}
+
+export function updateUser(user) {
+  return request({
+    url: 'user/update',
+    method: 'put',
+    data: user
+  })
+}
+
+export function deleteUser(username) {
+  return request({
+    url: `user/delete/${username}`,
+    method: 'delete'
   })
 }
