@@ -27,21 +27,21 @@
           {{ scope.row.user.uiUserDesc }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="用户状态" width="100">
-        <template slot-scope="scope">
-          <el-tag
-            :type="scope.row.user.uiStatus === '0' ? 'success' : 'danger'"
-            disable-transitions
-          >{{ formatterStatus(scope.row.user.uiStatus) }}
-          </el-tag>
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="用户角色" width="140">
         <template slot-scope="scope">
           <div v-if="scope.row.roles.length > 0">
             <span v-for="role in scope.row.roles" :key="role">{{ role.riRoleDesc }} </span>
           </div>
           <div v-else >无</div>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="用户状态" width="100">
+        <template slot-scope="scope">
+          <el-tag
+                  :type="scope.row.user.uiStatus === '0' ? 'success' : 'danger'"
+                  disable-transitions
+          >{{ formatterStatus(scope.row.user.uiStatus) }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" width="180">
@@ -190,12 +190,20 @@ export default {
       this.dialogFormVisible = true
     },
     showDelete($index) {
+      const data = this.list[$index]
+      if (data.user.uiStatus === '1') {
+        this.$message({
+          showClose: true,
+          message: '注意哦，当前用户已处理失效状态！',
+          type: 'warning'
+        })
+        return
+      }
       this.$confirm('确定删除此用户?', '提示', {
         confirmButtonText: '确定',
         showCancelButton: false,
         type: 'warning'
       }).then(() => {
-        const data = this.list[$index]
         deleteUser(data.user.uiUsername).then(() => {
           this.fetchUser()
         }).catch(() => {
