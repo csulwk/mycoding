@@ -72,7 +72,7 @@
       :visible.sync="dialogFormVisible"
       @open='getUserRole'
     >
-      <el-form class="small-space" :model="tempUser" label-position="left" label-width="80px" style="width: 300px; margin-left:50px;">
+      <el-form class="small-space" :model="tempUser" label-position="right" label-width="80px" style="width: 300px; margin-left:50px;">
         <el-form-item v-if="dialogStatus=='create'" label="用户昵称" required>
           <el-input v-model="tempUser.username" type="text" />
         </el-form-item>
@@ -255,8 +255,3 @@ export default {
   }
 }
 </script>
-<style>
-  .el-form--label-left .el-form-item__label {
-    text-align: right;
-  }
-</style>
