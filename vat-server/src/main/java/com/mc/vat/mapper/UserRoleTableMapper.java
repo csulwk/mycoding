@@ -27,4 +27,23 @@ public interface UserRoleTableMapper {
      * @return 角色ID
      */
     List<Integer> selectRoleIdsByUserId(@Param("userId") Integer userId);
+
+    /**
+     * 添加用户角色信息
+     * @param userRole 角色信息
+     */
+    void saveUserRole(UserRoleTable userRole);
+
+    /**
+     * 更新用户角色信息
+     * @param userRole 角色信息
+     */
+    void updateUserRole(UserRoleTable userRole);
+
+    /**
+     * 查询用户角色信息
+     * @param userId 用户角色ID
+     * @return 用户角色信息
+     */
+    UserRoleTable selectUserRoleByUserId(@Param("userId") Integer userId);
 }

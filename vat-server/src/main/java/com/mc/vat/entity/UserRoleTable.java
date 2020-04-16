@@ -11,8 +11,8 @@ import java.util.Date;
  * @author kai
  * @date 2020-4-4 14:51
  */
-@Getter
 @Setter
+@Getter
 public class UserRoleTable {
     private Integer urtId;
 

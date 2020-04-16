@@ -5,6 +5,7 @@ import com.mc.vat.constant.RetMsg;
 import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
+import com.mc.vat.entity.UserRoleTable;
 import com.mc.vat.entity.req.UserRoleReq;
 import com.mc.vat.entity.resp.UserRoleResp;
 import com.mc.vat.mapper.*;
@@ -13,6 +14,7 @@ import com.mc.vat.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
     private RoleInfoMapper roleInfoMapper;
     private RolePermissionTableMapper rolePermissionTableMapper;
     private PermissionInfoMapper permissionInfoMapper;
-    private final String NAME = "lwk";
+    private final String OP_NAME = "coding";
 
     @Autowired
     public UserInfoServiceImpl(UserInfoMapper userInfoMapper, UserRoleTableMapper userRoleTableMapper,
@@ -82,18 +84,39 @@ public class UserInfoServiceImpl implements IUserInfoService {
         }
         user = new UserInfo();
         packageUser(user, req);
+        user.setUiCreateBy(OP_NAME);
         userInfoMapper.saveUser(user);
         log.info("新增参数 -> {}；新增用户ID -> {}", req, user.getUiUserId());
         return ResultUtil.retSuccess().fluentPut("userId", user.getUiUserId());
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public JSONObject updateUser(UserRoleReq req) {
         UserInfo user = userInfoMapper.selectByUserName(req.getUsername());
         if (user == null) {
             return ResultUtil.resp(RetMsg.RET_E205);
         }
+        UserRoleTable userRoleTable = userRoleTableMapper.selectUserRoleByUserId(user.getUiUserId());
+        if (req.getRoleId() != null) {
+            if (userRoleTable == null) {
+                log.info("用户{}新增角色：{}", user.getUiUserId(), req.getRoleId());
+                userRoleTable = new UserRoleTable();
+                userRoleTable.setUrtUserId(user.getUiUserId());
+                userRoleTable.setUrtRoleId(req.getRoleId());
+                userRoleTable.setUrtCreateBy(OP_NAME);
+                userRoleTableMapper.saveUserRole(userRoleTable);
+            } else if (!req.getRoleId().equals(userRoleTable.getUrtRoleId())){
+                log.info("用户{}更新角色：{}->{}", user.getUiUserId(), userRoleTable.getUrtRoleId(), req.getRoleId());
+                userRoleTable.setUrtRoleId(req.getRoleId());
+                userRoleTable.setUrtUpdateBy(OP_NAME);
+                userRoleTableMapper.updateUserRole(userRoleTable);
+            } else {
+                log.info("用户变更角色：{}->{}", req.getRoleId(), userRoleTable.getUrtRoleId());
+            }
+        }
         packageUser(user, req);
+        user.setUiUpdateBy(OP_NAME);
         userInfoMapper.updateUser(user);
         log.info("更新参数 -> {}；更新用户ID -> {}", req, user.getUiUserId());
         return ResultUtil.retSuccess().fluentPut("userId", user.getUiUserId());
@@ -112,8 +135,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
 
     @Override
     public List<UserRoleResp> getAllUserAllRole() {
-        List<UserRoleResp> ur = userInfoMapper.getAllUserAllRole();
-        return ur;
+        return userInfoMapper.getAllUserAllRole();
     }
 
     /**
@@ -130,7 +152,5 @@ public class UserInfoServiceImpl implements IUserInfoService {
         src.setUiEmail(des.getEmail());
         src.setUiAvatar(des.getAvatar());
         src.setUiStatus(des.getStatus());
-        src.setUiCreateBy(NAME);
-        src.setUiUpdateBy(NAME);
     }
 }

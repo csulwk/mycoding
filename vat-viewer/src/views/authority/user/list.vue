@@ -16,7 +16,10 @@
       border
       fit
       highlight-current-row
+      :default-sort="{prop: 'user.uiUserId', order: 'ascending'}"
     >
+      <el-table-column prop="user.uiUserId" align="center" label="ID" width="60">
+      </el-table-column>
       <el-table-column align="center" label="用户名称" width="120">
         <template slot-scope="scope">
           {{ scope.row.user.uiUsername }}
@@ -37,10 +40,8 @@
       </el-table-column>
       <el-table-column align="center" label="用户状态" width="100">
         <template slot-scope="scope">
-          <el-tag
-                  :type="scope.row.user.uiStatus === '0' ? 'success' : 'danger'"
-                  disable-transitions
-          >{{ formatterStatus(scope.row.user.uiStatus) }}
+          <el-tag :type="scope.row.user.uiStatus === '0' ? 'success' : 'danger'" disable-transitions>
+            {{ formatterStatus(scope.row.user.uiStatus) }}
           </el-tag>
         </template>
       </el-table-column>

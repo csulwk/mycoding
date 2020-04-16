@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mc.vat.mapper.UserRoleTableMapper">
-  <resultMap id="BaseResultMap" type="com.mc.vat.entity.UserRoleTable">
+  <resultMap id="UserRoleMap" type="com.mc.vat.entity.UserRoleTable">
     <id column="urt_id" jdbcType="INTEGER" property="urtId" />
     <result column="urt_user_id" jdbcType="INTEGER" property="urtUserId" />
     <result column="urt_role_id" jdbcType="INTEGER" property="urtRoleId" />
@@ -12,10 +12,12 @@
     <result column="urt_update_time" jdbcType="TIMESTAMP" property="urtUpdateTime" />
     <result column="urt_version" jdbcType="INTEGER" property="urtVersion" />
   </resultMap>
+
   <sql id="Base_Column_List">
     urt_id, urt_user_id, urt_role_id, urt_enabled, urt_create_by, urt_create_time, urt_update_by,
     urt_update_time, urt_version
   </sql>
+
   <select id="selectRoleIdsByUserIds" resultType="java.lang.Integer">
     select urt_role_id
     from user_role_table
@@ -28,9 +30,39 @@
       </if>
     </where>
   </select>
+
   <select id="selectRoleIdsByUserId" resultType="java.lang.Integer">
     select urt_role_id
     from user_role_table
     where urt_user_id = #{userId}
   </select>
+
+  <select id="selectUserRoleByUserId" resultMap="UserRoleMap">
+    select <include refid="Base_Column_List" />
+    from user_role_table
+    where urt_user_id = #{userId}
+  </select>
+
+  <insert id="saveUserRole" parameterType="com.mc.vat.entity.UserRoleTable"  keyProperty="urtId" useGeneratedKeys="true">
+    insert into user_role_table(
+      urt_user_id, urt_role_id, urt_enabled, urt_create_by
+    )
+    values (
+      #{urtUserId}, #{urtRoleId}, #{urtEnabled}, #{urtCreateBy}
+    )
+  </insert>
+
+  <update id="updateUserRole" parameterType="com.mc.vat.entity.UserRoleTable">
+    update user_role_table set urt_version = urt_version + 1
+    <if test="urtRoleId!=null and urtRoleId!=''">
+      ,urt_role_id = #{urtRoleId}
+    </if>
+    <if test="urtEnabled!=null and urtEnabled!=''">
+      ,urt_enabled = #{urtEnabled}
+    </if>
+    <if test="urtUpdateBy!=null and urtUpdateBy!=''">
+      ,urt_update_by = #{urtUpdateBy}
+    </if>
+    where urt_user_id = #{urtUserId} and urt_version = #{urtVersion}
+  </update>
 </mapper>

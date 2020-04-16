@@ -18,6 +18,7 @@
     <result column="ui_update_time" jdbcType="TIMESTAMP" property="uiUpdateTime" />
     <result column="ui_version" jdbcType="INTEGER" property="uiVersion" />
   </resultMap>
+
   <resultMap id="userRoleMap" type="com.mc.vat.entity.resp.UserRoleResp" >
     <!-- association: 处理一对一、多对一的情形 -->
     <association property="user" resultMap="UserMap" />
@@ -46,17 +47,20 @@
     LEFT JOIN role_info ri
     ON urt.urt_role_id = ri.ri_role_id
   </select>
+
   <select id="selectByUserName" resultMap="UserMap">
     select
     <include refid="Base_Column_List" />
     from user_info
     where ui_username = #{username}
   </select>
+
   <select id="selectAllUserInfo" resultMap="UserMap">
     select
     <include refid="Base_Column_List" />
     from user_info
   </select>
+
   <insert id="saveUser" parameterType="com.mc.vat.entity.UserInfo"  keyProperty="uiUserId" useGeneratedKeys="true">
     insert into user_info(
       ui_username, ui_password, ui_user_desc, ui_sex, ui_mobile, ui_email,ui_avatar,ui_status,ui_create_by,ui_update_by
@@ -66,6 +70,7 @@
       #{uiMobile}, #{uiEmail}, #{uiAvatar}, #{uiStatus}, #{uiCreateBy},#{uiUpdateBy}
     )
   </insert>
+
   <update id="updateUser" parameterType="com.mc.vat.entity.UserInfo">
     update user_info set ui_version = ui_version + 1
     <if test="uiUsername!=null and uiUsername!=''">
@@ -100,6 +105,7 @@
     </if>
     where ui_user_id = #{uiUserId} and ui_version = #{uiVersion}
   </update>
+
   <update id="deleteByUserId">
     update user_info set ui_status = 1
     where ui_user_id = #{userId}
