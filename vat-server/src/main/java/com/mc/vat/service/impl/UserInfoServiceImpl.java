@@ -33,6 +33,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
     private RolePermissionTableMapper rolePermissionTableMapper;
     private PermissionInfoMapper permissionInfoMapper;
     private final String OP_NAME = "coding";
+    private final String SET_ENABLED = "1";
 
     @Autowired
     public UserInfoServiceImpl(UserInfoMapper userInfoMapper, UserRoleTableMapper userRoleTableMapper,
@@ -77,6 +78,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public JSONObject addUserAndRole(UserRoleReq req) {
         UserInfo user = userInfoMapper.selectByUserName(req.getUsername());
         if (user != null) {
@@ -87,6 +89,16 @@ public class UserInfoServiceImpl implements IUserInfoService {
         user.setUiCreateBy(OP_NAME);
         userInfoMapper.saveUser(user);
         log.info("新增参数 -> {}；新增用户ID -> {}", req, user.getUiUserId());
+        // 先新增用户信息再新增角色信息
+        if (req.getRoleId() != null && user.getUiUserId() != null) {
+            log.info("用户{}新增角色：{}", user.getUiUsername(), req.getRoleId());
+            UserRoleTable userRoleTable = new UserRoleTable();
+            userRoleTable.setUrtUserId(user.getUiUserId());
+            userRoleTable.setUrtRoleId(req.getRoleId());
+            userRoleTable.setUrtEnabled(SET_ENABLED);
+            userRoleTable.setUrtCreateBy(OP_NAME);
+            userRoleTableMapper.saveUserRole(userRoleTable);
+        }
         return ResultUtil.retSuccess().fluentPut("userId", user.getUiUserId());
     }
 
@@ -100,14 +112,15 @@ public class UserInfoServiceImpl implements IUserInfoService {
         UserRoleTable userRoleTable = userRoleTableMapper.selectUserRoleByUserId(user.getUiUserId());
         if (req.getRoleId() != null) {
             if (userRoleTable == null) {
-                log.info("用户{}新增角色：{}", user.getUiUserId(), req.getRoleId());
+                log.info("用户{}新增角色：{}", user.getUiUsername(), req.getRoleId());
                 userRoleTable = new UserRoleTable();
                 userRoleTable.setUrtUserId(user.getUiUserId());
                 userRoleTable.setUrtRoleId(req.getRoleId());
+                userRoleTable.setUrtEnabled(SET_ENABLED);
                 userRoleTable.setUrtCreateBy(OP_NAME);
                 userRoleTableMapper.saveUserRole(userRoleTable);
             } else if (!req.getRoleId().equals(userRoleTable.getUrtRoleId())){
-                log.info("用户{}更新角色：{}->{}", user.getUiUserId(), userRoleTable.getUrtRoleId(), req.getRoleId());
+                log.info("用户{}更新角色：{}->{}", user.getUiUsername(), userRoleTable.getUrtRoleId(), req.getRoleId());
                 userRoleTable.setUrtRoleId(req.getRoleId());
                 userRoleTable.setUrtUpdateBy(OP_NAME);
                 userRoleTableMapper.updateUserRole(userRoleTable);
