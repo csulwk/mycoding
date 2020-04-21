@@ -37,4 +37,12 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
         log.info("查询参数 -> {}；查询结果 -> {}", userIds, results);
         return results;
     }
+
+    @Override
+    public RoleInfo getRoleInfoByRoleId(Integer roleId) {
+        RoleInfo result = roleInfoMapper.selectByRoleId(roleId);
+        log.info("查询参数 -> {}；查询结果 -> {}", roleId, result);
+        return result;
+    }
+
 }

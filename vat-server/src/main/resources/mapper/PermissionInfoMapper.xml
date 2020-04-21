@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mc.vat.mapper.PermissionInfoMapper">
-  <resultMap id="BaseResultMap" type="com.mc.vat.entity.PermissionInfo">
+  <resultMap id="PermInfoMap" type="com.mc.vat.entity.PermissionInfo">
     <id column="pi_perm_id" jdbcType="INTEGER" property="piPermId" />
     <result column="pi_perm_code" jdbcType="VARCHAR" property="piPermCode" />
     <result column="pi_perm_desc" jdbcType="VARCHAR" property="piPermDesc" />
@@ -13,13 +13,23 @@
     <result column="pi_update_time" jdbcType="TIMESTAMP" property="piUpdateTime" />
     <result column="pi_version" jdbcType="INTEGER" property="piVersion" />
   </resultMap>
-  <sql id="Base_Column_List">
+
+  <resultMap id="PermTreeMap" type="com.mc.vat.entity.PermTree">
+    <id column="pi_perm_id" property="permId" />
+    <result column="pi_perm_code" property="permCode" />
+    <result column="pi_perm_desc" property="permDesc" />
+    <result column="pi_parent_id" property="parentId" />
+    <result column="pi_status" property="permStatus" />
+  </resultMap>
+
+  <sql id="Perm_Column_List">
     pi_perm_id, pi_perm_code, pi_perm_desc, pi_parent_id, pi_status, pi_create_by, pi_create_time,
     pi_update_by, pi_update_time, pi_version
   </sql>
-  <select id="selectByPermIds" resultMap="BaseResultMap">
+
+  <select id="selectByPermIds" resultMap="PermInfoMap">
     select
-    <include refid="Base_Column_List" />
+    <include refid="Perm_Column_List" />
     from permission_info
     <where>
       <if test = "permIds != null and permIds.size != 0">
@@ -30,9 +40,23 @@
       </if>
     </where>
   </select>
-  <select id="selectAllPermissionInfo" resultMap="BaseResultMap">
+
+  <select id="selectAllPermissionInfo" resultMap="PermInfoMap">
     select
-    <include refid="Base_Column_List" />
+    <include refid="Perm_Column_List" />
     from permission_info
   </select>
+
+  <select id="selectRolePermListByRoleId" resultMap="PermTreeMap">
+    select
+      pi_perm_id,pi_perm_code,pi_perm_desc,pi_parent_id,pi_status
+    from (
+        select rpt_role_id,rpt_perm_id
+        from role_permission_table
+        where rpt_role_id = #{roleId}
+    ) rpt
+    left join permission_info pi
+    on rpt.rpt_perm_id = pi.pi_perm_id
+  </select>
+
 </mapper>

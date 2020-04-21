@@ -1,5 +1,6 @@
 package com.mc.vat.mapper;
 
+import com.mc.vat.entity.PermTree;
 import com.mc.vat.entity.PermissionInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -25,4 +26,11 @@ public interface PermissionInfoMapper {
      * @return 权限信息
      */
     List<PermissionInfo> selectAllPermissionInfo();
+
+    /**
+     * 获取指定角色ID的权限信息
+     * @param roleId 角色ID
+     * @return 权限信息
+     */
+    List<PermTree> selectRolePermListByRoleId(@Param("roleId") Integer roleId);
 }

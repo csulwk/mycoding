@@ -15,8 +15,8 @@ import java.util.List;
 public interface RoleInfoMapper {
 
     /**
-     * 根据角色ID查询角色信息
-     * @param roleIds 角色ID
+     * 根据角色ID列表查询角色信息
+     * @param roleIds 角色ID列表
      * @return 角色信息
      */
     List<RoleInfo> selectByRoleIds(@Param("roleIds") List<Integer> roleIds);
@@ -26,4 +26,11 @@ public interface RoleInfoMapper {
      * @return 角色信息
      */
     List<RoleInfo> selectAllRoleInfo();
+
+    /**
+     * 根据角色ID查询角色信息
+     * @param roleId 角色ID
+     * @return 角色信息
+     */
+    RoleInfo selectByRoleId(Integer roleId);
 }

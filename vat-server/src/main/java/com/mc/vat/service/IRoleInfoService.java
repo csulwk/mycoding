@@ -23,4 +23,11 @@ public interface IRoleInfoService {
      * @return 角色信息
      */
     List<RoleInfo> getRoleListByUserIds(List<Integer> userIds);
+
+    /**
+     * 根据角色ID查询角色信息
+     * @param roleId 角色ID
+     * @return 角色信息
+     */
+    RoleInfo getRoleInfoByRoleId(Integer roleId);
 }

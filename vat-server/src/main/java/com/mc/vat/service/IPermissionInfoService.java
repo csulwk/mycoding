@@ -1,5 +1,6 @@
 package com.mc.vat.service;
 
+import com.mc.vat.entity.PermTree;
 import com.mc.vat.entity.PermissionInfo;
 
 import java.util.List;
@@ -23,4 +24,11 @@ public interface IPermissionInfoService {
      * @return 权限信息
      */
     List<PermissionInfo> getPermissionListByRoleIds(List<Integer> roleIds);
+
+    /**
+     * 根据指定角色ID查询权限信息
+     * @param roleId 角色ID
+     * @return 权限信息
+     */
+    List<PermTree> getRolePermListByRoleId(Integer roleId);
 }
