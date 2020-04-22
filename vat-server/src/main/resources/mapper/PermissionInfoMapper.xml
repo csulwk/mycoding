@@ -55,8 +55,14 @@
         from role_permission_table
         where rpt_role_id = #{roleId}
     ) rpt
-    left join permission_info pi
+    inner join permission_info pi
     on rpt.rpt_perm_id = pi.pi_perm_id
+  </select>
+
+  <select id="selectAllPermList" resultMap="PermTreeMap">
+    select
+      pi_perm_id,pi_perm_code,pi_perm_desc,pi_parent_id,pi_status
+    from permission_info
   </select>
 
 </mapper>

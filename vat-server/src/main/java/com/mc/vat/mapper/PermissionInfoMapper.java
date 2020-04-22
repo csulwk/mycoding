@@ -33,4 +33,10 @@ public interface PermissionInfoMapper {
      * @return 权限信息
      */
     List<PermTree> selectRolePermListByRoleId(@Param("roleId") Integer roleId);
+
+    /**
+     * 获取所有的权限列表
+     * @return 权限列表
+     */
+    List<PermTree> selectAllPermList();
 }

@@ -53,6 +53,17 @@ public class PermissionInfoServiceImpl implements IPermissionInfoService {
         return results;
     }
 
+    @Override
+    public List<PermTree> getAllPermList() {
+        List<PermTree> permList = permissionInfoMapper.selectAllPermList();
+        log.info("权限列表 -> {}", permList);
+
+        // 第一层菜单的pid=0
+        List<PermTree> results = convertList2Tree(permList, 0);
+        log.info("转换结果 -> {}", results);
+        return results;
+    }
+
     /**
      * 构建权限树
      * @param permList 权限列表
