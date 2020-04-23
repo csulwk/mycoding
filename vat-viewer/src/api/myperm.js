@@ -7,17 +7,10 @@ export function getAllPerm() {
   })
 }
 
-export function login(data) {
+export function getAllPermList() {
   return request({
-    url: '/user/login',
-    method: 'post',
-    data
+    url: `perm/all`,
+    method: 'get'
   })
 }
 
-export function logout() {
-  return request({
-    url: '/user/logout',
-    method: 'post'
-  })
-}

@@ -3,7 +3,7 @@
     <div class="tool-bar">
       <el-form>
         <el-form-item>
-          <el-button v-if="hasPerm('YHGL')" size="mini" type="primary" icon="plus" @click="showCreate">新增</el-button>
+          <el-button v-if="hasPerm('XTGL:user:edit')" size="mini" type="primary" icon="plus" @click="showCreate">新增</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -47,7 +47,7 @@
       </el-table-column>
       <el-table-column prop="user.uiVersion" label="版本" width="60">
       </el-table-column>
-      <el-table-column v-if="hasPerm('YHGL')" align="center" label="管理" width="160">
+      <el-table-column v-if="hasPerm('XTGL:user:edit')" align="center" label="管理" width="160">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="edit" @click="showUpdate(scope.$index)">修改</el-button>
           <el-popconfirm title="删除须谨慎，请确认？" style="margin-left: 10px;" @onConfirm="showDelete(scope.$index)">
@@ -57,7 +57,7 @@
       </el-table-column>
     </el-table>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @open='getUserRole'>
-      <el-form :model="tempUser" label-position="right" label-width="80px" style="width: 600px; margin-left:50px;">
+      <el-form :model="tempUser" label-position="right" label-width="80px">
         <el-form-item v-if="dialogStatus === 'create'" label="用户昵称" required>
           <el-input v-model="tempUser.username" type="text"></el-input>
         </el-form-item>

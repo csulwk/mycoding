@@ -7,17 +7,9 @@ export function getAllRole() {
   })
 }
 
-export function login(data) {
+export function getRolePermList(role) {
   return request({
-    url: '/user/login',
-    method: 'post',
-    data
-  })
-}
-
-export function logout() {
-  return request({
-    url: '/user/logout',
-    method: 'post'
+    url: `role/perms/${role}`,
+    method: 'get'
   })
 }
