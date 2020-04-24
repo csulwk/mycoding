@@ -53,7 +53,7 @@
               </template>
             </div>
           </el-form-item>
-          <el-form-item label="用户归属">
+          <el-form-item label="归属用户">
             <el-tag v-for="item in roleUsers" :key="item.menuName" effect="plain" v-text="item.menuName" />
           </el-form-item>
         </el-form>

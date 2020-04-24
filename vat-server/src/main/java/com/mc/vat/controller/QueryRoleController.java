@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mc.vat.constant.RetMsg;
 import com.mc.vat.entity.PermTree;
 import com.mc.vat.entity.RoleInfo;
+import com.mc.vat.entity.UserInfo;
 import com.mc.vat.service.IPermissionInfoService;
 import com.mc.vat.service.IRoleInfoService;
 import com.mc.vat.util.ResultUtil;
@@ -45,6 +46,20 @@ public class QueryRoleController {
             return ResultUtil.resp(RetMsg.RET_E301);
         }
         List<PermTree> result = permissionInfoService.getRolePermListByRoleId(id);
+        return ResultUtil.retSuccess(result);
+    }
+
+    @RequestMapping(value = "/{roleId}/users", method = RequestMethod.GET)
+    public JSONObject queryUsersOfRoleByRoleId(@PathVariable(value = "roleId", required = true) Integer roleId) {
+        log.info("根据角色ID查询归属的用户列表 -> {}" , JSONObject.toJSONString(roleId));
+        if (roleId == null) {
+            return ResultUtil.resp(RetMsg.RET_E102);
+        }
+        RoleInfo role = roleInfoService.getRoleInfoByRoleId(roleId);
+        if (role == null) {
+            return ResultUtil.resp(RetMsg.RET_E301);
+        }
+        List<UserInfo> result = null;
         return ResultUtil.retSuccess(result);
     }
 

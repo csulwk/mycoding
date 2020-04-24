@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: 'MYCODING', icon: 'dashboard' }
     }]
   },
 
@@ -60,7 +60,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/example/table',
     name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
+    meta: { title: '系统监控', icon: 'example' },
     children: [
       {
         path: 'table',
@@ -85,7 +85,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'Form',
         component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        meta: { title: '定时任务', icon: 'form' }
       }
     ]
   }
@@ -107,21 +107,21 @@ export const asyncRoutes = [
         path: 'admin/user',
         name: '用户管理',
         component: () => import('@/views/authority/user/list'),
-        meta: { title: '用户管理', icon: '' },
+        meta: { title: '用户管理', icon: 'user' },
         menu: 'user'
       },
       {
         path: 'admin/role',
         name: '角色管理',
         component: () => import('@/views/authority/role/list'),
-        meta: { title: '角色管理', icon: '' },
+        meta: { title: '角色管理', icon: 'user' },
         menu: 'role'
       },
       {
         path: 'admin/permission',
         name: '权限管理',
         component: () => import('@/views/authority/perm/list'),
-        meta: { title: '权限管理', icon: '' },
+        meta: { title: '权限管理', icon: 'user' },
         menu: 'permission'
       }
     ]

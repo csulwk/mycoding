@@ -8,6 +8,9 @@ spring:
     url: jdbc:mysql://192.168.99.100:3306/mycoding?characterEncoding=utf8&useSSL=false
     username: root
     password: 123456
+    #url: jdbc:mysql://106.12.159.160:3306/mycoding?characterEncoding=utf8&useSSL=false
+    #username: coding
+    #password:
 mybatis:
   type-aliases-package: com.mc.vat.entity
   mapper-locations: classpath:mapper/*.xml

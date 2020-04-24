@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-table :data="tableData" border style="width: 100%" :default-sort="{prop: 'piPermId', order: 'ascending'}">
+    <el-table :data="tableData" border style="width: 100%" :default-sort="{prop: 'piPermCode', order: 'ascending'}">
       <el-table-column prop="piPermId" label="ID" align="center" width="60"/>
-      <el-table-column prop="piPermCode" label="权限代码" align="center" width="120"/>
+      <el-table-column prop="piPermCode" label="权限代码" align="center" width="160"/>
       <el-table-column prop="piPermDesc" label="权限名称" align="center"/>
       <el-table-column prop="piParentId" label="PID" align="center" width="60"/>
       <el-table-column align="center" label="权限状态" width="100">
