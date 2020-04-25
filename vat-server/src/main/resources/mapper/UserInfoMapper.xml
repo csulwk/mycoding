@@ -110,4 +110,16 @@
     update user_info set ui_status = 1
     where ui_user_id = #{userId}
   </update>
+
+  <select id="selectByRoleId" parameterType="com.mc.vat.entity.UserInfo">
+    select
+      ui.ui_user_id,ui.ui_username
+    from (
+        select urt_id,urt_user_id,urt_role_id
+        from user_role_table
+        where urt_role_id = #{roleId}
+           ) urt
+    inner join user_info ui
+    on urt.urt_user_id = ui.ui_user_id
+  </select>
 </mapper>

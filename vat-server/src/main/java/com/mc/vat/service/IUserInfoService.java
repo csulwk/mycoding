@@ -60,6 +60,17 @@ public interface IUserInfoService {
      */
     JSONObject deleteByUsername(String username);
 
+    /**
+     * 获取所有用户的角色信息
+     * @return
+     */
     List<UserRoleResp> getAllUserAllRole();
+
+    /**
+     * 查询角色的归属用户
+     * @param roleId 角色ID
+     * @return 用户列表
+     */
+    List<UserInfo> getUsersOfRoleByRoleId(Integer roleId);
 
 }

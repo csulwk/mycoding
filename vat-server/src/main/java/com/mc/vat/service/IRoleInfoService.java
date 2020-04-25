@@ -1,6 +1,7 @@
 package com.mc.vat.service;
 
 import com.mc.vat.entity.RoleInfo;
+import com.mc.vat.entity.UserInfo;
 
 import java.util.List;
 
@@ -30,4 +31,5 @@ public interface IRoleInfoService {
      * @return 角色信息
      */
     RoleInfo getRoleInfoByRoleId(Integer roleId);
+
 }

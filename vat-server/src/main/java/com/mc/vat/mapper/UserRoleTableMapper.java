@@ -29,6 +29,13 @@ public interface UserRoleTableMapper {
     List<Integer> selectRoleIdsByUserId(@Param("userId") Integer userId);
 
     /**
+     * 根据角色ID查询所属的用户
+     * @param roleId 角色ID
+     * @return 用户ID
+     */
+    List<Integer> selectUserIdsByRoleId(@Param("roleId") Integer roleId);
+
+    /**
      * 添加用户角色信息
      * @param userRole 角色信息
      */

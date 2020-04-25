@@ -48,4 +48,38 @@
     WHERE ri_role_id = #{roleId}
   </select>
 
+  <insert id="saveRole" parameterType="com.mc.vat.entity.RoleInfo"  keyProperty="riRoleId" useGeneratedKeys="true">
+    insert into role_info(
+      ri_role_code, ri_role_desc, ri_status, ri_create_by, ri_update_by
+    )
+    values (
+             #{riRoleCode}, #{riRoleDesc}, #{riStatus}, #{riCreateBy},#{riUpdateBy}
+           )
+  </insert>
+
+  <update id="updateRole" parameterType="com.mc.vat.entity.RoleInfo">
+    update role_info set ri_version = ri_version + 1
+    <if test="riRoleCode!=null and riRoleCode!=''">
+      ,ri_role_code = #{riRoleCode}
+    </if>
+    <if test="riRoleDesc!=null and riRoleDesc!=''">
+      ,ri_role_desc = #{riRoleDesc}
+    </if>
+    <if test="riStatus!=null and riStatus!=''">
+      ,ri_status = #{riStatus}
+    </if>
+    <if test="riCreateBy!=null and riCreateBy!=''">
+      ,ri_create_by = #{riCreateBy}
+    </if>
+    <if test="riUpdateBy!=null and riUpdateBy!=''">
+      ,ri_update_by = #{riUpdateBy}
+    </if>
+    where ri_role_id = #{riRoleId} and ri_version = #{riVersion}
+  </update>
+
+  <update id="deleteByRoleId">
+    update role_info set ri_status = 1
+    where ri_role_id = #{roleId}
+  </update>
+
 </mapper>

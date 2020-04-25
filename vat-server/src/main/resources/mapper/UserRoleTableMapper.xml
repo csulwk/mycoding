@@ -37,6 +37,12 @@
     where urt_user_id = #{userId}
   </select>
 
+  <select id="selectUserIdsByRoleId" resultType="java.lang.Integer">
+    select urt_user_id
+    from user_role_table
+    where urt_role_id = #{roleId}
+  </select>
+
   <select id="selectUserRoleByUserId" resultMap="UserRoleMap">
     select <include refid="Base_Column_List" />
     from user_role_table

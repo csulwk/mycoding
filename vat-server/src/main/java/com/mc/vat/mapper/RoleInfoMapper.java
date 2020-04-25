@@ -33,4 +33,22 @@ public interface RoleInfoMapper {
      * @return 角色信息
      */
     RoleInfo selectByRoleId(Integer roleId);
+
+    /**
+     * 添加新角色
+     * @param roleInfo 角色信息
+     */
+    void saveRole(RoleInfo roleInfo);
+
+    /**
+     * 更新角色信息
+     * @param roleInfo 角色信息
+     */
+    void updateRole(RoleInfo roleInfo);
+
+    /**
+     * 删除指定角色的信息
+     * @param roleId 角色ID
+     */
+    void deleteByRoleId(@Param("roleId") Integer roleId);
 }

@@ -151,6 +151,11 @@ public class UserInfoServiceImpl implements IUserInfoService {
         return userInfoMapper.getAllUserAllRole();
     }
 
+    @Override
+    public List<UserInfo> getUsersOfRoleByRoleId(Integer roleId) {
+        return userInfoMapper.selectByRoleId(roleId);
+    }
+
     /**
      * 封装用户信息
      * @param src 旧用户信息

@@ -46,4 +46,11 @@ public interface UserInfoMapper {
      * @param userId 用户ID
      */
     void deleteByUserId(@Param("userId") Integer userId);
+
+    /**
+     * 根据角色ID查询所有的归属用户
+     * @param roleId
+     * @return
+     */
+    List<UserInfo> selectByRoleId(@Param("roleId") Integer roleId);
 }

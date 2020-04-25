@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mc.vat.mapper.RolePermissionTableMapper">
-  <resultMap id="BaseResultMap" type="com.mc.vat.entity.RolePermissionTable">
+  <resultMap id="RolePermMap" type="com.mc.vat.entity.RolePermissionTable">
     <id column="rpt_id" jdbcType="INTEGER" property="rptId" />
     <result column="rpt_role_id" jdbcType="INTEGER" property="rptRoleId" />
     <result column="rpt_perm_id" jdbcType="INTEGER" property="rptPermId" />
@@ -12,10 +12,12 @@
     <result column="rpt_update_time" jdbcType="TIMESTAMP" property="rptUpdateTime" />
     <result column="rpt_version" jdbcType="INTEGER" property="rptVersion" />
   </resultMap>
+
   <sql id="Base_Column_List">
     rpt_id, rpt_role_id, rpt_perm_id, rpt_enabled, rpt_create_by, rpt_create_time, rpt_update_by,
     rpt_update_time, rpt_version
   </sql>
+
   <select id="selectPermIdsByRoleIds" resultType="java.lang.Integer">
     select rpt_perm_id
     from role_permission_table
@@ -28,4 +30,29 @@
       </if>
     </where>
   </select>
+
+  <select id="selectPermIdsByRoleId">
+    select rpt_perm_id from role_permission_table
+    where rpt_role_id = #{roleId}
+  </select>
+
+  <select id="selectRoleIdsByPermId">
+    select rpt_role_id from role_permission_table
+    where rpt_perm_id = #{permId}
+  </select>
+
+  <insert id="saveRolePerm" parameterType="com.mc.vat.entity.RolePermissionTable"  keyProperty="rptId" useGeneratedKeys="true">
+    insert into role_permission_table(
+      rpt_role_id, rpt_perm_id, rpt_enabled, rpt_create_by
+    )
+    values (
+             #{rptRoleId}, #{rptPermId}, #{rptEnabled}, #{rptCreateBy}
+           )
+  </insert>
+
+  <delete id="deleteRolePerm">
+    delete from role_permission_table
+    where rpt_role_id = #{roleId} and rpt_perm_id = #{permId}
+  </delete>
+
 </mapper>
