@@ -5,27 +5,23 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 /**
- * 添加用户表单输入
+ * 用户角色信息
  * @author kai
- * @date 2020-04-12 19:27
+ * @date 2020-04-25 22:54
  */
 @Getter
 @Setter
-public class UserRoleReq {
+public class RolePermReq {
 
     @NotBlank
-    private String username;
+    private String roleCode;
     @NotBlank
-    private String password;
-    private String desc;
-    private String mobile;
-    private String email;
-    private Integer sex;
-    private String avatar;
-    private String status;
-    private Integer roleId;
+    private String roleDesc;
+    private String roleStat;
+    private List<Integer> permList;
 
     @Override
     public String toString() {

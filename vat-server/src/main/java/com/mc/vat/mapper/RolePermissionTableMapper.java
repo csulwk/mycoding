@@ -48,4 +48,12 @@ public interface RolePermissionTableMapper {
      */
     void deleteRolePerm(@Param("roleId") Integer roleId, @Param("permId") Integer permId);
 
+    /**
+     * 根据角色ID和权限ID查询角色权限信息
+     * @param roleId 角色ID
+     * @param permId 权限ID
+     * @return 角色权限信息
+     */
+    RolePermissionTable selectByRoleIdAndPermId(@Param("roleId") Integer roleId, @Param("permId") Integer permId);
+
 }

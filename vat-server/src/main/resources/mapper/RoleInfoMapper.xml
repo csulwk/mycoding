@@ -48,6 +48,12 @@
     WHERE ri_role_id = #{roleId}
   </select>
 
+  <select id="selectByRoleCode" resultType="com.mc.vat.entity.RoleInfo">
+    select <include refid="Role_Column_List" />
+    from role_info
+    WHERE ri_role_code = #{roleCode}
+  </select>
+
   <insert id="saveRole" parameterType="com.mc.vat.entity.RoleInfo"  keyProperty="riRoleId" useGeneratedKeys="true">
     insert into role_info(
       ri_role_code, ri_role_desc, ri_status, ri_create_by, ri_update_by

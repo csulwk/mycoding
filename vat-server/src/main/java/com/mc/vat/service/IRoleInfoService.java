@@ -1,7 +1,9 @@
 package com.mc.vat.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
+import com.mc.vat.entity.req.RolePermReq;
 
 import java.util.List;
 
@@ -31,5 +33,19 @@ public interface IRoleInfoService {
      * @return 角色信息
      */
     RoleInfo getRoleInfoByRoleId(Integer roleId);
+
+    /**
+     * 根据角色代码查询角色信息
+     * @param roleCode 角色代码
+     * @return 角色信息
+     */
+    RoleInfo getRoleInfoByRoleCode(String roleCode);
+
+    /**
+     * 添加角色信息
+     * @param req 角色信息
+     * @return 角色信息
+     */
+    JSONObject addRoleAndPerm(RolePermReq req);
 
 }

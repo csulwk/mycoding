@@ -29,7 +29,8 @@ public enum RetMsg {
      * 查询结果异常
      */
     RET_E301(CodeSet.CODE_E301, "查询结果为空"),
-    RET_E302(CodeSet.CODE_E309, "查询异常"),
+    RET_E302(CodeSet.CODE_E302, "重复数据"),
+    RET_E309(CodeSet.CODE_E309, "查询异常"),
     /**
      * 程序特殊异常
      */

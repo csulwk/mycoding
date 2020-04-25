@@ -55,4 +55,10 @@
     where rpt_role_id = #{roleId} and rpt_perm_id = #{permId}
   </delete>
 
+  <delete id="selectByRoleIdAndPermId"  parameterType="com.mc.vat.entity.RolePermissionTable">
+    select <include refid="Base_Column_List" />
+    from role_permission_table
+    where rpt_role_id = #{roleId} and rpt_perm_id = #{permId}
+  </delete>
+
 </mapper>

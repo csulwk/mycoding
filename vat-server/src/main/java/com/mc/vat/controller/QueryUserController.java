@@ -85,7 +85,7 @@ public class QueryUserController {
     }
 
     @RequestMapping(value = "/delete/{username}", method = RequestMethod.DELETE)
-    public JSONObject updateUser(@PathVariable(value = "username", required = true) String username) {
+    public JSONObject deleteUser(@PathVariable(value = "username", required = true) String username) {
         log.info("根据用户名称删除用户 -> {}" , JSONObject.toJSONString(username));
         JSONObject result = userInfoService.deleteByUsername(username);
         return result;

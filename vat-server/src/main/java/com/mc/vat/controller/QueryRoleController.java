@@ -5,15 +5,14 @@ import com.mc.vat.constant.RetMsg;
 import com.mc.vat.entity.PermTree;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
+import com.mc.vat.entity.req.RolePermReq;
 import com.mc.vat.service.IPermissionInfoService;
 import com.mc.vat.service.IRoleInfoService;
+import com.mc.vat.service.IUserInfoService;
 import com.mc.vat.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,10 +26,13 @@ import java.util.List;
 @Slf4j
 public class QueryRoleController {
 
+    private IUserInfoService userInfoService;
     private IRoleInfoService roleInfoService;
     private IPermissionInfoService permissionInfoService;
     @Autowired
-    public QueryRoleController(IRoleInfoService roleInfoService, IPermissionInfoService permissionInfoService) {
+    public QueryRoleController(IUserInfoService userInfoService, IRoleInfoService roleInfoService,
+                               IPermissionInfoService permissionInfoService) {
+        this.userInfoService = userInfoService;
         this.roleInfoService = roleInfoService;
         this.permissionInfoService = permissionInfoService;
     }
@@ -59,8 +61,27 @@ public class QueryRoleController {
         if (role == null) {
             return ResultUtil.resp(RetMsg.RET_E301);
         }
-        List<UserInfo> result = null;
+        List<UserInfo> result = userInfoService.getUsersOfRoleByRoleId(roleId);
         return ResultUtil.retSuccess(result);
     }
 
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public JSONObject addRoleAndPerm(@RequestBody RolePermReq req) {
+        log.info("根据输入参数添加角色信息 -> {}" , JSONObject.toJSONString(req));
+        return roleInfoService.addRoleAndPerm(req);
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public JSONObject updateRoleAndPerm(@RequestBody RolePermReq req) {
+        log.info("根据输入参数更新角色信息 -> {}" , JSONObject.toJSONString(req));
+        // TODO
+        return null;
+    }
+
+    @RequestMapping(value = "/delete/{roleCode}", method = RequestMethod.DELETE)
+    public JSONObject deleteRoleAndPerm(@PathVariable(value = "roleCode", required = true) String roleCode) {
+        log.info("根据角色代码删除角色信息 -> {}" , JSONObject.toJSONString(roleCode));
+        // TODO
+        return null;
+    }
 }

@@ -22,6 +22,13 @@ public interface PermissionInfoMapper {
     List<PermissionInfo> selectByPermIds(@Param("permIds") List<Integer> permIds);
 
     /**
+     * 根据权限ID查询权限信息
+     * @param permId 权限ID
+     * @return 权限信息
+     */
+    PermissionInfo selectByPermId(@Param("permId") Integer permId);
+
+    /**
      * 获取所有权限信息
      * @return 权限信息
      */

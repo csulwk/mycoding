@@ -35,6 +35,13 @@ public interface RoleInfoMapper {
     RoleInfo selectByRoleId(Integer roleId);
 
     /**
+     * 根据角色代码查询角色信息
+     * @param roleCode 角色代码
+     * @return 角色信息
+     */
+    RoleInfo selectByRoleCode(@Param("roleCode") String roleCode);
+
+    /**
      * 添加新角色
      * @param roleInfo 角色信息
      */

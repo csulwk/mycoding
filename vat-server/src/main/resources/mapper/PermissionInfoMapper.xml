@@ -41,6 +41,12 @@
     </where>
   </select>
 
+  <select id="selectByPermId" parameterType="com.mc.vat.entity.PermissionInfo">
+    select <include refid="Perm_Column_List" />
+    from permission_info
+    where pi_perm_id = #{permId}
+  </select>
+
   <select id="selectAllPermissionInfo" resultMap="PermInfoMap">
     select
     <include refid="Perm_Column_List" />

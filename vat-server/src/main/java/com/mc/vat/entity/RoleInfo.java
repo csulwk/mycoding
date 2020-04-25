@@ -14,6 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class RoleInfo {
+
     private Integer riRoleId;
 
     private String riRoleCode;
