@@ -83,9 +83,9 @@
     where ri_role_id = #{riRoleId} and ri_version = #{riVersion}
   </update>
 
-  <update id="deleteByRoleId">
-    update role_info set ri_status = 1
+  <delete id="deleteByRoleId">
+    delete from role_info
     where ri_role_id = #{roleId}
-  </update>
+  </delete>
 
 </mapper>

@@ -79,8 +79,8 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
             return ResultUtil.resp(RetMsg.RET_E302);
         }
         // 角色不存在则添加
-        roleInfo = packageRole(req);
-        roleInfo.setRiStatus(SET_ENABLED);
+        roleInfo = new RoleInfo();
+        packageRole(roleInfo, req);
         roleInfo.setRiCreateBy(OP_NAME);
         roleInfo.setRiUpdateBy(OP_NAME);
         roleInfoMapper.saveRole(roleInfo);
@@ -92,7 +92,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
                 PermissionInfo permInfo = permissionInfoMapper.selectByPermId(permId);
                 if (permInfo == null) {
                     log.warn("该权限不存在 -> {}", permId);
-                    return ResultUtil.resp(RetMsg.RET_E309);
+                    throw new RuntimeException("添加角色时权限异常...");
                 }
                 // 查询角色权限是否存在
                 RolePermissionTable rolePerm = rolePermissionTableMapper.selectByRoleIdAndPermId(roleInfo.getRiRoleId(),
@@ -100,26 +100,83 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
                 if (rolePerm == null) {
                     // 角色权限不存在则添加
                     rolePerm = packageRolePerm(roleInfo.getRiRoleId(), permInfo.getPiPermId());
+                    rolePerm.setRptCreateBy(OP_NAME);
+                    rolePerm.setRptUpdateBy(OP_NAME);
                     rolePermissionTableMapper.saveRolePerm(rolePerm);
                 }
                 log.info("添加的权限ID -> {}", rolePerm.getRptId());
-
             }
         }
         return ResultUtil.retSuccess().fluentPut("roleId", roleInfo.getRiRoleId());
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public JSONObject updateRoleAndPerm(RolePermReq req) {
+        // 查询角色是否存在
+        RoleInfo roleInfo = roleInfoMapper.selectByRoleCode(req.getRoleCode());
+        if (roleInfo == null) {
+            log.warn("该角色不存在 -> {}", req);
+            return ResultUtil.resp(RetMsg.RET_E301);
+        }
+        // 角色存在则更新
+        packageRole(roleInfo, req);
+        roleInfo.setRiUpdateBy(OP_NAME);
+        roleInfoMapper.updateRole(roleInfo);
+        log.info("添加的角色ID -> {}", roleInfo.getRiRoleId());
+        // 角色赋权处理
+        List<Integer> permIds = rolePermissionTableMapper.selectPermIdsByRoleId(roleInfo.getRiRoleId());
+        for (Integer permId : req.getPermList()) {
+            // 若目标权限在原始权限中不存在则新增
+            if (!permIds.contains(permId)) {
+                RolePermissionTable rolePerm = packageRolePerm(roleInfo.getRiRoleId(), permId);
+                rolePerm.setRptEnabled(SET_ENABLED);
+                rolePerm.setRptCreateBy(OP_NAME);
+                rolePerm.setRptUpdateBy(OP_NAME);
+                rolePermissionTableMapper.saveRolePerm(rolePerm);
+                log.info("新增角色权限 -> {}", rolePerm.getRptId());
+            }
+        }
+        for (Integer permId : permIds) {
+            // 若原始权限在目标权限中不存在则删除
+            if (!req.getPermList().contains(permId)) {
+                rolePermissionTableMapper.deleteRolePerm(roleInfo.getRiRoleId(), permId);
+                log.info("删除角色权限 -> RoleId={}, PermId={}", roleInfo.getRiRoleId(), permId);
+            }
+        }
+        return ResultUtil.retSuccess().fluentPut("roleId", roleInfo.getRiRoleId());
+    }
+
+    @Override
+    public JSONObject deleteRoleAndPerm(String roleCode) {
+        // 查询角色是否存在
+        RoleInfo roleInfo = roleInfoMapper.selectByRoleCode(roleCode);
+        if (roleInfo == null) {
+            log.warn("该角色不存在 -> {}", roleCode);
+            return ResultUtil.resp(RetMsg.RET_E301);
+        }
+        // 查询角色权限信息
+        List<Integer> permIds = rolePermissionTableMapper.selectPermIdsByRoleId(roleInfo.getRiRoleId());
+        for (Integer permId : permIds) {
+            // 删除已存在的权限信息
+            rolePermissionTableMapper.deleteRolePerm(roleInfo.getRiRoleId(), permId);
+            log.info("删除角色权限 -> RoleId={}, PermId={}", roleInfo.getRiRoleId(), permId);
+        }
+        // 删除角色信息
+        roleInfoMapper.deleteByRoleId(roleInfo.getRiRoleId());
+        log.info("删除角色 -> {}", roleInfo.getRiRoleId());
+        return ResultUtil.retSuccess().fluentPut("roleId", roleInfo.getRiRoleId());
+    }
+
     /**
      * 封装角色信息
-     * @param des 输入信息
-     * @return 角色信息
+     * @param src 原始数据
+     * @param des 目标数据
      */
-    private RoleInfo packageRole(RolePermReq des) {
-        RoleInfo roleInfo = new RoleInfo();
-        roleInfo.setRiRoleCode(des.getRoleCode());
-        roleInfo.setRiRoleDesc(des.getRoleDesc());
-        roleInfo.setRiStatus(des.getRoleStat());
-        return roleInfo;
+    private void packageRole(RoleInfo src, RolePermReq des) {
+        src.setRiRoleCode(des.getRoleCode());
+        src.setRiRoleDesc(des.getRoleDesc());
+        src.setRiStatus(des.getRoleStat());
     }
 
     /**

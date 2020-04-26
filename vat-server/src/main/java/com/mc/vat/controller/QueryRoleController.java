@@ -74,14 +74,12 @@ public class QueryRoleController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public JSONObject updateRoleAndPerm(@RequestBody RolePermReq req) {
         log.info("根据输入参数更新角色信息 -> {}" , JSONObject.toJSONString(req));
-        // TODO
-        return null;
+        return roleInfoService.updateRoleAndPerm(req);
     }
 
     @RequestMapping(value = "/delete/{roleCode}", method = RequestMethod.DELETE)
     public JSONObject deleteRoleAndPerm(@PathVariable(value = "roleCode", required = true) String roleCode) {
         log.info("根据角色代码删除角色信息 -> {}" , JSONObject.toJSONString(roleCode));
-        // TODO
-        return null;
+        return roleInfoService.deleteRoleAndPerm(roleCode);
     }
 }

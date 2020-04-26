@@ -48,4 +48,17 @@ public interface IRoleInfoService {
      */
     JSONObject addRoleAndPerm(RolePermReq req);
 
+    /**
+     * 更新角色信息
+     * @param req 角色信息
+     * @return 角色信息
+     */
+    JSONObject updateRoleAndPerm(RolePermReq req);
+
+    /**
+     * 根据角色代码删除角色信息
+     * @param roleCode 角色代码
+     * @return 角色信息
+     */
+    JSONObject deleteRoleAndPerm(String roleCode);
 }

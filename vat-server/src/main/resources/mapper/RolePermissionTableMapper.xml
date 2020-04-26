@@ -31,12 +31,12 @@
     </where>
   </select>
 
-  <select id="selectPermIdsByRoleId">
+  <select id="selectPermIdsByRoleId" resultType="java.lang.Integer">
     select rpt_perm_id from role_permission_table
     where rpt_role_id = #{roleId}
   </select>
 
-  <select id="selectRoleIdsByPermId">
+  <select id="selectRoleIdsByPermId" resultType="java.lang.Integer">
     select rpt_role_id from role_permission_table
     where rpt_perm_id = #{permId}
   </select>
@@ -55,10 +55,10 @@
     where rpt_role_id = #{roleId} and rpt_perm_id = #{permId}
   </delete>
 
-  <delete id="selectByRoleIdAndPermId"  parameterType="com.mc.vat.entity.RolePermissionTable">
+  <select id="selectByRoleIdAndPermId" resultType="com.mc.vat.entity.RolePermissionTable">
     select <include refid="Base_Column_List" />
     from role_permission_table
     where rpt_role_id = #{roleId} and rpt_perm_id = #{permId}
-  </delete>
+  </select>
 
 </mapper>
