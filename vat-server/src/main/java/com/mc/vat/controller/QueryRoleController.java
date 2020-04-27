@@ -51,6 +51,16 @@ public class QueryRoleController {
         return ResultUtil.retSuccess(result);
     }
 
+    @RequestMapping(value = "/{roleId}/perms", method = RequestMethod.GET)
+    public JSONObject queryPermIdsByRoleId(@PathVariable(value = "roleId", required = true) Integer roleId) {
+        log.info("根据角色ID查询权限ID列表 -> {}" , JSONObject.toJSONString(roleId));
+        if (roleId == null) {
+            return ResultUtil.resp(RetMsg.RET_E102);
+        }
+        List<Integer> result = roleInfoService.getPermIdsByRoleId(roleId);
+        return ResultUtil.retSuccess(result);
+    }
+
     @RequestMapping(value = "/{roleId}/users", method = RequestMethod.GET)
     public JSONObject queryUsersOfRoleByRoleId(@PathVariable(value = "roleId", required = true) Integer roleId) {
         log.info("根据角色ID查询归属的用户列表 -> {}" , JSONObject.toJSONString(roleId));
@@ -68,6 +78,7 @@ public class QueryRoleController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public JSONObject addRoleAndPerm(@RequestBody RolePermReq req) {
         log.info("根据输入参数添加角色信息 -> {}" , JSONObject.toJSONString(req));
+        // TODO 新增报错
         return roleInfoService.addRoleAndPerm(req);
     }
 
@@ -80,6 +91,7 @@ public class QueryRoleController {
     @RequestMapping(value = "/delete/{roleCode}", method = RequestMethod.DELETE)
     public JSONObject deleteRoleAndPerm(@PathVariable(value = "roleCode", required = true) String roleCode) {
         log.info("根据角色代码删除角色信息 -> {}" , JSONObject.toJSONString(roleCode));
+        // 删除报错
         return roleInfoService.deleteRoleAndPerm(roleCode);
     }
 }

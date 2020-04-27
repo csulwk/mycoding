@@ -63,6 +63,11 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
     }
 
     @Override
+    public List<Integer> getPermIdsByRoleId(Integer roleId) {
+        return rolePermissionTableMapper.selectPermIdsByRoleId(roleId);
+    }
+
+    @Override
     public RoleInfo getRoleInfoByRoleCode(String roleCode) {
         RoleInfo result = roleInfoMapper.selectByRoleCode(roleCode);
         log.info("查询参数 -> {}；查询结果 -> {}", roleCode, result);

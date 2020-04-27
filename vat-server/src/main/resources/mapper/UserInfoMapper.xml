@@ -111,7 +111,7 @@
     where ui_user_id = #{userId}
   </update>
 
-  <select id="selectByRoleId" parameterType="com.mc.vat.entity.UserInfo">
+  <select id="selectByRoleId" resultType="com.mc.vat.entity.UserInfo">
     select
       ui.ui_user_id,ui.ui_username
     from (
