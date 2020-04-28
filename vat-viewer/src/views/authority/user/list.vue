@@ -30,7 +30,7 @@
       </el-table-column>
       <el-table-column align="center" label="用户状态" width="100">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.user.uiStatus === '0' ? 'success' : 'danger'" disable-transitions>
+          <el-tag :type="scope.row.user.uiStatus === '1' ? 'success' : 'danger'" disable-transitions>
             {{ formatterStatus(scope.row.user.uiStatus) }}
           </el-tag>
         </template>
@@ -169,14 +169,14 @@ export default {
       this.tempUser.mobile = data.user.uiMobile
       this.tempUser.email = data.user.uiEmail
       this.tempUser.desc = data.user.uiUserDesc
-      this.tempUser.status = data.user.uiStatus === '0'
+      this.tempUser.status = data.user.uiStatus === '1'
       this.tempUser.roleId = data.roles.length === 0 ? '' : data.roles[0].riRoleId
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
     },
     showDelete($index) {
       const data = this.list[$index]
-      if (data.user.uiStatus === '1') {
+      if (data.user.uiStatus === '0') {
         this.$message({
           showClose: true,
           message: '注意哦，当前用户已是失效状态！',
@@ -185,13 +185,20 @@ export default {
         return
       }
       deleteUser(data.user.uiUsername).then(() => {
-        this.fetchUser()
+        this.$message({
+          message: '删除成功',
+          type: 'success',
+          duration: 1 * 1000,
+          onClose: () => {
+            this.fetchUser()
+          }
+        })
       }).catch(() => {
         this.$message.error('删除失败')
       })
     },
     formatterStatus(val) {
-      return val === '0' ? '正常' : '失效'
+      return val === '1' ? '正常' : '失效'
     },
     formatterTime(val) {
       if (val === null || val.length === 0) {
@@ -200,7 +207,7 @@ export default {
       return parseTime(val)
     },
     onSubmitUser() {
-      this.tempUser.status = this.tempUser.status === true ? '0' : '1'
+      this.tempUser.status = this.tempUser.status === true ? '1' : '0'
       addUser(this.tempUser).then(() => {
         this.dialogFormVisible = false
         this.$message({
@@ -216,7 +223,7 @@ export default {
       })
     },
     onUpdateUser() {
-      this.tempUser.status = this.tempUser.status === true ? '0' : '1'
+      this.tempUser.status = this.tempUser.status === true ? '1' : '0'
       updateUser(this.tempUser).then(() => {
         this.dialogFormVisible = false
         this.$message({

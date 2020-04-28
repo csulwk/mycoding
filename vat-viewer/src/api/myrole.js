@@ -44,9 +44,9 @@ export function getUsersOfRole(roleId) {
   })
 }
 
-export function getPermsOfRole(roleId) {
+export function getPermsOfRole(roleCode) {
   return request({
-    url: `role/${roleId}/perms`,
+    url: `role/${roleCode}/perms`,
     method: 'get'
   })
 }

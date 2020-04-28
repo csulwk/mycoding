@@ -13,7 +13,7 @@
       <el-table-column prop="riRoleDesc" label="角色名称" align="center" />
       <el-table-column align="center" label="角色状态" width="100">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.riStatus === '0' ? 'success' : 'danger'" disable-transitions>
+          <el-tag :type="scope.row.riStatus === '1' ? 'success' : 'danger'" disable-transitions>
             <span v-html="formatterStatus(scope.row.riStatus)" />
           </el-tag>
         </template>
@@ -75,7 +75,9 @@
             <div class="permissionContent">
               <div v-for="(item,index) in allPerms" :key="index">
                 <template v-if="item.children.length > 0">
-                  <div class="permissionTitle">{{ item.permDesc }}</div>
+                  <div class="permissionTitle">
+                    {{ item.permDesc }}
+                  </div>
                   <el-checkbox-group v-model="tempRole.permList">
                     <el-checkbox v-for="itemChild in item.children" :key="itemChild.permId" :label="itemChild.permId" style="width: 100px;margin-left: 6px;">
                       {{ itemChild.permDesc }}
@@ -178,7 +180,7 @@ export default {
       this.tempRole.roleCode = row.riRoleCode
       this.tempRole.roleDesc = row.riRoleDesc
       this.tempRole.roleId = row.riRoleId
-      this.tempRole.roleStat = row.riStatus === '0'
+      this.tempRole.roleStat = row.riStatus === '1'
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
     },
@@ -204,7 +206,7 @@ export default {
     showDelete(index, row) {
       console.log('index:' + index)
       console.log('row:' + JSON.stringify(row))
-      if (row.riStatus === '1') {
+      if (row.riStatus === '0') {
         this.$message({
           showClose: true,
           message: '注意哦，当前用户已是失效状态！',
@@ -212,8 +214,15 @@ export default {
         })
         return
       }
-      deleteRole(row.riRoleId).then(() => {
-        this.fetchUser()
+      deleteRole(row.riRoleCode).then(() => {
+        this.$message({
+          message: '删除成功',
+          type: 'success',
+          duration: 1000,
+          onClose: () => {
+            this.fetchRole()
+          }
+        })
       }).catch(() => {
         this.$message.error('删除失败')
       })
@@ -225,10 +234,10 @@ export default {
       return parseTime(val)
     },
     formatterStatus(val) {
-      return val === '0' ? '正常' : '失效'
+      return val === '1' ? '正常' : '失效'
     },
     onSubmitRole() {
-      this.tempRole.roleStat = this.tempRole.roleStat === true ? '0' : '1'
+      this.tempRole.roleStat = this.tempRole.roleStat === true ? '1' : '0'
       addRole(this.tempRole).then(() => {
         this.dialogFormVisible = false
         this.$message({
@@ -246,7 +255,7 @@ export default {
     },
     onUpdateRole() {
       console.log('tempRole:' + JSON.stringify(this.tempRole))
-      this.tempRole.roleStat = this.tempRole.roleStat === true ? '0' : '1'
+      this.tempRole.roleStat = this.tempRole.roleStat === true ? '1' : '0'
       updateRole(this.tempRole).then(() => {
         this.dialogFormVisible = false
         this.$message({

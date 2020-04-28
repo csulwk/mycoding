@@ -86,6 +86,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
         // 角色不存在则添加
         roleInfo = new RoleInfo();
         packageRole(roleInfo, req);
+        roleInfo.setRiStatus(SET_ENABLED);
         roleInfo.setRiCreateBy(OP_NAME);
         roleInfo.setRiUpdateBy(OP_NAME);
         roleInfoMapper.saveRole(roleInfo);
@@ -105,6 +106,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
                 if (rolePerm == null) {
                     // 角色权限不存在则添加
                     rolePerm = packageRolePerm(roleInfo.getRiRoleId(), permInfo.getPiPermId());
+                    rolePerm.setRptEnabled(SET_ENABLED);
                     rolePerm.setRptCreateBy(OP_NAME);
                     rolePerm.setRptUpdateBy(OP_NAME);
                     rolePermissionTableMapper.saveRolePerm(rolePerm);

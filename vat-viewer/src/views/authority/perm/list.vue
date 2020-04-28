@@ -7,7 +7,7 @@
       <el-table-column prop="piParentId" label="PID" align="center" width="60"/>
       <el-table-column align="center" label="权限状态" width="100">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.piStatus === '0' ? 'success' : 'danger'" disable-transitions>
+          <el-tag :type="scope.row.piStatus === '1' ? 'success' : 'danger'" disable-transitions>
             <span v-html="formatterStatus(scope.row.piStatus)"></span>
           </el-tag>
         </template>
@@ -79,7 +79,7 @@ export default {
       return parseTime(val)
     },
     formatterStatus(val) {
-      return val === '0' ? '正常' : '失效'
+      return val === '1' ? '正常' : '失效'
     },
     handleEdit(index, row) {
       console.log(index, row)

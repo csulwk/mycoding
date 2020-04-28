@@ -78,7 +78,9 @@ public class QueryRoleController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public JSONObject addRoleAndPerm(@RequestBody RolePermReq req) {
         log.info("根据输入参数添加角色信息 -> {}" , JSONObject.toJSONString(req));
-        // TODO 新增报错
+        // TODO 获取指定节点的父节点信息
+        // https://blog.csdn.net/lan_qinger/article/details/84284194
+        // https://blog.csdn.net/u013887008/article/details/81025779
         return roleInfoService.addRoleAndPerm(req);
     }
 
@@ -91,7 +93,6 @@ public class QueryRoleController {
     @RequestMapping(value = "/delete/{roleCode}", method = RequestMethod.DELETE)
     public JSONObject deleteRoleAndPerm(@PathVariable(value = "roleCode", required = true) String roleCode) {
         log.info("根据角色代码删除角色信息 -> {}" , JSONObject.toJSONString(roleCode));
-        // 删除报错
         return roleInfoService.deleteRoleAndPerm(roleCode);
     }
 }
