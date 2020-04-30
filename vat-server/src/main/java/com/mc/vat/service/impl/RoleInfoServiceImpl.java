@@ -64,7 +64,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
 
     @Override
     public List<Integer> getPermIdsByRoleId(Integer roleId) {
-        return rolePermissionTableMapper.selectPermIdsByRoleId(roleId);
+        return rolePermissionTableMapper.selectPermIdsByRoleId(roleId, false);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
         roleInfoMapper.updateRole(roleInfo);
         log.info("添加的角色ID -> {}", roleInfo.getRiRoleId());
         // 角色赋权处理
-        List<Integer> permIds = rolePermissionTableMapper.selectPermIdsByRoleId(roleInfo.getRiRoleId());
+        List<Integer> permIds = rolePermissionTableMapper.selectPermIdsByRoleId(roleInfo.getRiRoleId(), true);
         for (Integer permId : req.getPermList()) {
             // 若目标权限在原始权限中不存在则新增
             if (!permIds.contains(permId)) {
@@ -163,7 +163,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
             return ResultUtil.resp(RetMsg.RET_E301);
         }
         // 查询角色权限信息
-        List<Integer> permIds = rolePermissionTableMapper.selectPermIdsByRoleId(roleInfo.getRiRoleId());
+        List<Integer> permIds = rolePermissionTableMapper.selectPermIdsByRoleId(roleInfo.getRiRoleId(), true);
         for (Integer permId : permIds) {
             // 删除已存在的权限信息
             rolePermissionTableMapper.deleteRolePerm(roleInfo.getRiRoleId(), permId);

@@ -39,6 +39,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 抽屉组件，用于展示详细信息 -->
     <el-drawer title="查看当前角色拥有的权限" :visible.sync="drawer" :with-header="false">
       <div style="margin: 10px 15px;">
         <el-form :model="tempRole" label-position="top" label-width="80px">
@@ -62,6 +63,7 @@
         </el-form>
       </div>
     </el-drawer>
+    <!-- 对话框组件，用于添加或更新信息 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @open="getRolePerm">
       <el-form :model="tempRole" label-position="right" label-width="80px">
         <el-form-item label="角色代码" required>
@@ -71,22 +73,14 @@
           <el-input v-model="tempRole.roleDesc" type="text" />
         </el-form-item>
         <el-form-item label="权限管理" size="medium" required>
-          <div class="permission">
-            <div class="permissionContent">
-              <div v-for="(item,index) in allPerms" :key="index">
-                <template v-if="item.children.length > 0">
-                  <div class="permissionTitle">
-                    {{ item.permDesc }}
-                  </div>
-                  <el-checkbox-group v-model="tempRole.permList">
-                    <el-checkbox v-for="itemChild in item.children" :key="itemChild.permId" :label="itemChild.permId" style="width: 100px;margin-left: 6px;">
-                      {{ itemChild.permDesc }}
-                    </el-checkbox>
-                  </el-checkbox-group>
-                </template>
-              </div>
-            </div>
-          </div>
+          <el-tree
+            ref="permTree"
+            :data="allPerms"
+            show-checkbox
+            node-key="permId"
+            :default-checked-keys="checkedKeys"
+            :props="defaultProps"
+          />
         </el-form-item>
         <el-form-item label="是否生效">
           <el-switch v-model="tempRole.roleStat" />
@@ -126,9 +120,14 @@ export default {
         roleStat: '',
         permList: []
       },
+      checkedKeys: [],
       allPerms: [],
       rolePerms: [],
-      roleUsers: []
+      roleUsers: [],
+      defaultProps: {
+        children: 'children',
+        label: 'permDesc'
+      }
     }
   },
   created() {
@@ -158,7 +157,7 @@ export default {
       this.tempRole.roleDesc = ''
       this.tempRole.roleId = ''
       this.tempRole.roleStat = true
-      this.tempRole.permList = [1, 2, 3, 4]
+      this.checkedKeys = [2, 3, 4]
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
     },
@@ -173,7 +172,7 @@ export default {
       })
       getPermsOfRole(row.riRoleId).then(resp => {
         console.log('getPermsOfRole:' + JSON.stringify(resp.data))
-        this.tempRole.permList = resp.data
+        this.checkedKeys = resp.data
       }).catch((err) => {
         console.log(err)
       })
@@ -236,8 +235,18 @@ export default {
     formatterStatus(val) {
       return val === '1' ? '正常' : '失效'
     },
+    getCheckedKeys() {
+      // 添加目前被选中的节点的 key
+      const fullArr = this.$refs.permTree.getCheckedKeys(false)
+      // 添加目前半选中的节点的 key
+      const halfArr = this.$refs.permTree.getHalfCheckedKeys()
+      console.log('getCheckedKeys: ' + fullArr.concat(halfArr))
+      return fullArr.concat(halfArr)
+    },
     onSubmitRole() {
       this.tempRole.roleStat = this.tempRole.roleStat === true ? '1' : '0'
+      this.tempRole.permList = this.getCheckedKeys()
+      console.log('permList: ' + this.tempRole.permList)
       addRole(this.tempRole).then(() => {
         this.dialogFormVisible = false
         this.$message({
@@ -256,6 +265,8 @@ export default {
     onUpdateRole() {
       console.log('tempRole:' + JSON.stringify(this.tempRole))
       this.tempRole.roleStat = this.tempRole.roleStat === true ? '1' : '0'
+      this.tempRole.permList = this.getCheckedKeys()
+      console.log('permList: ' + this.tempRole.permList)
       updateRole(this.tempRole).then(() => {
         this.dialogFormVisible = false
         this.$message({

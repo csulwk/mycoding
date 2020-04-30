@@ -32,8 +32,19 @@
   </select>
 
   <select id="selectPermIdsByRoleId" resultType="java.lang.Integer">
-    select rpt_perm_id from role_permission_table
-    where rpt_role_id = #{roleId}
+    select rpt.rpt_perm_id
+    from (
+         select rpt_role_id,rpt_perm_id
+         from role_permission_table
+         where rpt_role_id = #{roleId}
+           ) rpt
+    left join permission_info pi
+    on rpt.rpt_perm_id = pi.pi_perm_id
+    <where>
+      <if test = "includeParent == false">
+        pi.pi_parent_id != 0
+      </if>
+    </where>
   </select>
 
   <select id="selectRoleIdsByPermId" resultType="java.lang.Integer">

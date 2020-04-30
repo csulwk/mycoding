@@ -78,9 +78,6 @@ public class QueryRoleController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public JSONObject addRoleAndPerm(@RequestBody RolePermReq req) {
         log.info("根据输入参数添加角色信息 -> {}" , JSONObject.toJSONString(req));
-        // TODO 获取指定节点的父节点信息
-        // https://blog.csdn.net/lan_qinger/article/details/84284194
-        // https://blog.csdn.net/u013887008/article/details/81025779
         return roleInfoService.addRoleAndPerm(req);
     }
 

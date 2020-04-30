@@ -24,9 +24,10 @@ public interface RolePermissionTableMapper {
     /**
      * 根据角色ID查询分配的权限
      * @param roleId 角色ID
+     * @param includeParent 是否包括父节点
      * @return 权限ID列表
      */
-    List<Integer> selectPermIdsByRoleId(@Param("roleId") Integer roleId);
+    List<Integer> selectPermIdsByRoleId(@Param("roleId") Integer roleId, @Param("includeParent") Boolean includeParent);
 
     /**
      * 根据权限ID查询所属的角色

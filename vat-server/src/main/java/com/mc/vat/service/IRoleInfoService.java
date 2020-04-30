@@ -35,7 +35,7 @@ public interface IRoleInfoService {
     RoleInfo getRoleInfoByRoleId(Integer roleId);
 
     /**
-     * 根据角色ID查询权限ID列表
+     * 根据角色ID查询权限ID列表，不包括父节点
      * @param roleId 角色ID
      * @return 权限ID列表
      */

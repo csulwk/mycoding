@@ -8,8 +8,14 @@
       :props="defaultProps"
       :filter-node-method="filterNode"
       class="filter-tree"
-      default-expand-all
-    />
+      default-expand-all></el-tree>
+    <el-divider></el-divider>
+    <el-tree
+      :data="data2"
+      show-checkbox
+      node-key="id"
+      :default-checked-keys="[5]"
+      :props="defaultProps"></el-tree>
 
   </div>
 </template>
