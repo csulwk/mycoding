@@ -63,10 +63,10 @@
 
   <insert id="saveUser" parameterType="com.mc.vat.entity.UserInfo"  keyProperty="uiUserId" useGeneratedKeys="true">
     insert into user_info(
-      ui_username, ui_password, ui_user_desc, ui_sex, ui_mobile, ui_email,ui_avatar,ui_status,ui_create_by,ui_update_by
+      ui_username, ui_password, ui_salt, ui_user_desc, ui_sex, ui_mobile, ui_email,ui_avatar,ui_status,ui_create_by,ui_update_by
     )
     values (
-      #{uiUsername}, #{uiPassword}, #{uiUserDesc}, #{uiSex},
+      #{uiUsername}, #{uiPassword}, #{uiSalt}, #{uiUserDesc}, #{uiSex},
       #{uiMobile}, #{uiEmail}, #{uiAvatar}, #{uiStatus}, #{uiCreateBy},#{uiUpdateBy}
     )
   </insert>
@@ -78,6 +78,9 @@
     </if>
     <if test="uiPassword!=null and uiPassword!=''">
       ,ui_password = #{uiPassword}
+    </if>
+    <if test="uiSalt!=null and uiSalt!=''">
+      ,ui_salt = #{uiSalt}
     </if>
     <if test="uiUserDesc!=null and uiUserDesc!=''">
       ,ui_user_desc = #{uiUserDesc}

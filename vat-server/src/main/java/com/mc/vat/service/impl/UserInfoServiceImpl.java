@@ -1,6 +1,7 @@
 package com.mc.vat.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mc.vat.constant.Consts;
 import com.mc.vat.constant.RetMsg;
 import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
@@ -12,11 +13,14 @@ import com.mc.vat.mapper.*;
 import com.mc.vat.service.IUserInfoService;
 import com.mc.vat.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户处理
@@ -163,7 +167,11 @@ public class UserInfoServiceImpl implements IUserInfoService {
      */
     private void packageUser(UserInfo src, UserRoleReq des) {
         src.setUiUsername(des.getUsername());
-        src.setUiPassword(des.getPassword());
+        String salt = new SecureRandomNumberGenerator().nextBytes().toString();
+        String cipher = new SimpleHash(Consts.ENC_ALGORITHM, des.getPassword(), salt, Consts.ENC_TIMES).toString();
+        log.info("原始密码是 {}, 盐是： {}, 加密密文是：{}", des.getPassword(), salt, cipher);
+        src.setUiSalt(salt);
+        src.setUiPassword(cipher);
         src.setUiUserDesc(des.getDesc());
         src.setUiSex(des.getSex() == null ?  0: des.getSex());
         src.setUiMobile(des.getMobile());

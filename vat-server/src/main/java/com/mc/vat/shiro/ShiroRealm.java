@@ -1,18 +1,19 @@
 package com.mc.vat.shiro;
 
+import com.mc.vat.constant.Consts;
 import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
-import com.mc.vat.mapper.UserInfoMapper;
 import com.mc.vat.service.IUserInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
@@ -20,19 +21,20 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * 登录判断
  * @author kai
  * @date 2020-04-01 0:41
  */
 @Slf4j
-public class CodingRealm extends AuthorizingRealm {
+public class ShiroRealm extends AuthorizingRealm {
 
     @Autowired
     private IUserInfoService userInfoService;
 
     /**
      * 权限验证
-     * @param principalCollection
-     * @return
+     * @param principalCollection principalCollection
+     * @return AuthorizationInfo
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -67,25 +69,28 @@ public class CodingRealm extends AuthorizingRealm {
 
     /**
      * 登录验证
-     * @param authenticationToken
-     * @return
-     * @throws AuthenticationException
+     * @param authenticationToken authenticationToken
+     * @return SimpleAuthenticationInfo
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         log.info("doGetAuthenticationInfo -> {}", authenticationToken.toString());
-
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-        String username = (String) authenticationToken.getPrincipal();
+        // 获取用户输入的账号密码
+        String username = authenticationToken.getPrincipal().toString();
+        // 获取数据库中的账号密码
         UserInfo user = userInfoService.getUserInfoByUsername(username);
         log.info("登录验证 -> {}", user);
         if (user == null) {
-            throw new RuntimeException("用户不存在");
+            log.info("用户不存在: {}", username);
+            throw new UnknownAccountException();
         }
-
-        // authenticationInfo信息交个shiro，调用login的时候会自动比较这里的token和authenticationInfo
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(user,
-                user.getUiPassword(), this.getName());
-        return authenticationInfo;
+        if ("0".equals(user.getUiStatus())) {
+            log.info("用户已失效: {}", username);
+            throw new LockedAccountException();
+        }
+        // authenticationInfo信息交给shiro，调用login的时候会自动比较这里的token和authenticationInfo
+        // 通过配置中的 HashedCredentialsMatcher 进行自动校验
+        return new SimpleAuthenticationInfo(user, user.getUiPassword(), ByteSource.Util.bytes(user.getUiSalt()), this.getName());
     }
 }
