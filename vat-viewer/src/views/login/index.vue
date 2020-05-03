@@ -1,53 +1,53 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-card style="width: 400px;margin: 60px auto;">
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
-      <div class="title-container">
-        <h3 class="title">VAT-VIEWER</h3>
-      </div>
+        <div class="title-container">
+          <h3 class="title">VAT-VIEWER</h3>
+        </div>
 
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="输入用户名"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
+        <el-form-item prop="username">
+          <span class="svg-container">
+            <svg-icon icon-class="user" />
+          </span>
+          <el-input
+            ref="username"
+            v-model="loginForm.username"
+            placeholder="输入用户名"
+            name="username"
+            type="text"
+            tabindex="1"
+            auto-complete="on"
+          />
+        </el-form-item>
 
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          placeholder="输入密码"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            :key="passwordType"
+            ref="password"
+            v-model="loginForm.password"
+            :type="passwordType"
+            placeholder="输入密码"
+            name="password"
+            tabindex="2"
+            auto-complete="on"
+            @keyup.enter.native="handleLogin"
+          />
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+        <el-checkbox v-model="loginForm.remembered" name="rememberMe" style="margin-bottom: 22px;">记住我</el-checkbox>
 
-      <div class="tips">
-        <span style="margin-right:20px;">没有账号？注册新账号</span>
-      </div>
+        <el-button :loading="loading" type="primary" round style="width:100%;" @click.native.prevent="handleLogin">登录</el-button>
 
-    </el-form>
+      </el-form>
+    </el-card>
   </div>
 </template>
 
@@ -73,7 +73,8 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '123456'
+        password: '123456',
+        remembered: false
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -104,6 +105,7 @@ export default {
       })
     },
     handleLogin() {
+      console.log('loginForm:' + JSON.stringify(this.loginForm))
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
@@ -127,7 +129,7 @@ export default {
 
 $bg:#283443;
 $light_gray:#fff;
-$cursor: #fff;
+$cursor: black;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
@@ -148,7 +150,8 @@ $cursor: #fff;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      //color: $light_gray;
+      color: black;
       height: 47px;
       caret-color: $cursor;
 
@@ -177,13 +180,14 @@ $light_gray:#eee;
   min-height: 100%;
   width: 100%;
   background-color: $bg;
+  //background-color: #f1f1f1;
   overflow: hidden;
 
   .login-form {
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    //padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
   }
@@ -213,10 +217,13 @@ $light_gray:#eee;
 
     .title {
       font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
+      //color: $light_gray;
+      margin: 0 auto 40px auto;
       text-align: center;
-      font-weight: bold;
+      //font-weight: bold;
+      font-weight: 700;
+      color: #ea6f5a;
+      border-bottom: 2px solid #ea6f5a;
     }
   }
 

@@ -110,7 +110,7 @@
   </update>
 
   <update id="deleteByUserId">
-    update user_info set ui_status = 1
+    update user_info set ui_status = 0
     where ui_user_id = #{userId}
   </update>
 

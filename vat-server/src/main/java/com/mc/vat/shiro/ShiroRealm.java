@@ -1,6 +1,5 @@
 package com.mc.vat.shiro;
 
-import com.mc.vat.constant.Consts;
 import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
@@ -10,11 +9,11 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -75,13 +74,12 @@ public class ShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         log.info("doGetAuthenticationInfo -> {}", authenticationToken.toString());
-        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         // 获取用户输入的账号密码
         String username = authenticationToken.getPrincipal().toString();
         // 获取数据库中的账号密码
         UserInfo user = userInfoService.getUserInfoByUsername(username);
         log.info("登录验证 -> {}", user);
-        if (user == null) {
+        if (ObjectUtils.isEmpty(user)) {
             log.info("用户不存在: {}", username);
             throw new UnknownAccountException();
         }

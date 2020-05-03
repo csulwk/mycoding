@@ -7,13 +7,15 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
+import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +26,35 @@ import java.util.Map;
 @Slf4j
 @Configuration
 public class ShiroConfig {
+
+    /**
+     * cookie对象
+     * @return SimpleCookie
+     */
+    @Bean
+    public SimpleCookie rememberMeCookie() {
+        log.info("ShiroConfig.rememberMeCookie...");
+        // cookie的名称，对应前端的checkbox的name = remembered
+        SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
+        simpleCookie.setHttpOnly(true);
+        // cookie生效时间2小时,单位秒
+        simpleCookie.setMaxAge(14400);
+        return simpleCookie;
+    }
+
+    /**
+     * cookie管理对象，记住我功能
+     * @return CookieRememberMeManager
+     */
+    @Bean
+    public CookieRememberMeManager rememberMeManager(SimpleCookie rememberMeCookie) {
+        log.info("ShiroConfig.rememberMeManager...");
+        CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
+        cookieRememberMeManager.setCookie(rememberMeCookie);
+        // 设置加密的Key,参数类型byte[],字节数组长度要求16
+        cookieRememberMeManager.setCipherKey("MYCODING_CRY_KEY".getBytes());
+        return cookieRememberMeManager;
+    }
 
     /**
      * 为防止密码在数据库里明码存储，通过该方法对密码进行编码；
@@ -38,8 +69,13 @@ public class ShiroConfig {
         return hashedCredentialsMatcher;
     }
 
+    /**
+     * 自定义realm
+     * @return ShiroRealm
+     */
     @Bean
-    public ShiroRealm myRealm(@Qualifier("hashedCredentialsMatcher") HashedCredentialsMatcher hashedCredentialsMatcher) {
+    public ShiroRealm shiroRealm(HashedCredentialsMatcher hashedCredentialsMatcher) {
+        log.info("ShiroConfig.shiroRealm...");
         ShiroRealm shiroRealm = new ShiroRealm();
         shiroRealm.setCredentialsMatcher(hashedCredentialsMatcher);
         return shiroRealm;
@@ -47,12 +83,18 @@ public class ShiroConfig {
 
     /**
      * SecurityManager，权限管理，这个类组合了登陆，登出，权限，session的处理，是个比较重要的类。
+     * @return SecurityManager
      */
     @Bean
-    public SecurityManager securityManager(@Qualifier("myRealm") ShiroRealm myRealm) {
+    public SecurityManager securityManager(ShiroRealm shiroRealm, CookieRememberMeManager rememberMeManager) {
+        log.info("ShiroConfig.securityManager...");
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        // 关联realm
-        securityManager.setRealm(myRealm);
+        // 将自定义的realm交给SecurityManager管理
+        securityManager.setRealm(shiroRealm);
+        // 自定义缓存实现，使用redis
+        // 自定义session管理，使用redis
+        // 使用记住我功能
+        securityManager.setRememberMeManager(rememberMeManager);
         return securityManager;
     }
 
@@ -61,7 +103,8 @@ public class ShiroConfig {
      * 它主要保持了三项数据，securityManager，filters，filterChainDefinitionManager。
      */
     @Bean
-    public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") SecurityManager securityManager) {
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
+        log.info("ShiroConfig.shiroFilter...");
         // 设置安全管理器
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
@@ -82,22 +125,12 @@ public class ShiroConfig {
     }
 
     /**
-     * DefaultAdvisorAutoProxyCreator，Spring的一个bean，由Advisor决定对哪些类的方法进行AOP代理。
-     */
-    @Bean
-    @DependsOn("lifecycleBeanPostProcessor")
-    public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
-        advisorAutoProxyCreator.setProxyTargetClass(true);
-        return advisorAutoProxyCreator;
-    }
-
-    /**
      * AuthorizationAttributeSourceAdvisor，shiro里实现的Advisor类，
      * 内部使用AopAllianceAnnotationsAuthorizingMethodInterceptor来拦截用以下注解的方法。
      */
     @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(@Qualifier("securityManager") SecurityManager securityManager) {
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+        log.info("ShiroConfig.authorizationAttributeSourceAdvisor...");
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
@@ -110,9 +143,20 @@ public class ShiroConfig {
      */
     @Bean("lifecycleBeanPostProcessor")
     public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+        log.info("ShiroConfig.lifecycleBeanPostProcessor...");
         return new LifecycleBeanPostProcessor();
     }
 
-
+    /**
+     * DefaultAdvisorAutoProxyCreator，Spring的一个bean，由Advisor决定对哪些类的方法进行AOP代理。
+     */
+    @Bean
+    @DependsOn("lifecycleBeanPostProcessor")
+    public static DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+        log.info("ShiroConfig.defaultAdvisorAutoProxyCreator...");
+        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        advisorAutoProxyCreator.setProxyTargetClass(true);
+        return advisorAutoProxyCreator;
+    }
 
 }

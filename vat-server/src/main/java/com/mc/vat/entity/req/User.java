@@ -7,10 +7,10 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 
 /**
+ * 登录信息
  * @author kai
  * @date 2020-03-22 20:20
  */
-
 @Getter
 @Setter
 public class User {
@@ -19,6 +19,8 @@ public class User {
     private String username;
     @NotBlank
     private String password;
+    @NotBlank
+    private boolean remembered;
 
     @Override
     public String toString() {

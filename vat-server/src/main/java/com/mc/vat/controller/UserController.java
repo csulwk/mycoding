@@ -44,16 +44,17 @@ public class UserController {
         // 对 html 标签进行转义，防止 XSS 攻击
         String username = HtmlUtils.htmlEscape(user.getUsername());
         String password = user.getPassword();
+        // user.isRemembered()
+        boolean remembered = true;
+        // 封装登录的用户名和密码
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password, remembered);
+        log.info("登录时: {}, {}, {}", token.getUsername(), Arrays.toString(token.getPassword()), token.isRememberMe());
 
         // 获取Subject实例对象
-        Subject subject = SecurityUtils.getSubject();
-        // 判断用户是否已登录
-        // 封装登录的用户名和密码
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-        log.info("登录时: {}, {}", token.getUsername(), Arrays.toString(token.getPassword()));
-        // 调用ShiroRealm类的方法认证
+        Subject currentUser = SecurityUtils.getSubject();
         try {
-            subject.login(token);
+            // 调用login方法,SecurityManager会收到AuthenticationToken,并将其发送给已配置的Realm执行认证检查
+            currentUser.login(token);
         } catch (IncorrectCredentialsException ice) {
             return ResultUtil.resp(RetMsg.ERROR,"密码错误");
         } catch (UnknownAccountException uae) {
@@ -63,7 +64,7 @@ public class UserController {
         } catch (AuthenticationException ae) {
             return ResultUtil.resp(RetMsg.ERROR,"登录认证异常");
         }
-        Serializable sessionId = subject.getSession().getId();
+        Serializable sessionId = currentUser.getSession().getId();
         JSONObject obj = new JSONObject();
         obj.put("token", sessionId);
         return ResultUtil.retSuccess(obj);
