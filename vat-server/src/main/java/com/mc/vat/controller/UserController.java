@@ -30,8 +30,11 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/mc/user")
 public class UserController {
 
-    @Autowired
     private IUserInfoService userInfoService;
+    @Autowired
+    public UserController(IUserInfoService userInfoService) {
+        this.userInfoService = userInfoService;
+    }
 
     /**
      * 用户登陆
@@ -44,11 +47,10 @@ public class UserController {
         // 对 html 标签进行转义，防止 XSS 攻击
         String username = HtmlUtils.htmlEscape(user.getUsername());
         String password = user.getPassword();
-        // user.isRemembered()
-        boolean remembered = true;
+        boolean remembered = user.isRemembered();
         // 封装登录的用户名和密码
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password, remembered);
-        log.info("登录时: {}, {}, {}", token.getUsername(), Arrays.toString(token.getPassword()), token.isRememberMe());
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        log.info("登录时: {}, {}, {}", token.getUsername(), Arrays.toString(token.getPassword()), remembered);
 
         // 获取Subject实例对象
         Subject currentUser = SecurityUtils.getSubject();
@@ -110,7 +112,7 @@ public class UserController {
 
     /**
      * 用户未登录返回信息
-     * @return JSONObject
+     * @return RET_E202
      */
     @GetMapping(value = "/unlogged")
     public JSONObject unLogged() {
@@ -121,7 +123,7 @@ public class UserController {
 
     /**
      * 用户权限不足返回信息
-     * @return
+     * @return RET_E203
      */
     @GetMapping(value = "/unauthorized")
     public JSONObject unauthorized(){

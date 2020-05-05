@@ -57,15 +57,14 @@ const actions = {
         const { data } = res
 
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('验证失败，请重新登录...')
         }
 
         const { roles, perms, name, avatar } = data
-        console.log('data -->' + data)
-        console.log('roles -->' + roles)
-        console.log('perms -->' + perms)
-        console.log('name -->' + name)
-        console.log('avatar -->' + avatar)
+        // console.log('data -->' + JSON.stringify(data))
+        console.log('getInfo --> name:' + name)
+        console.log('getInfo --> role:' + roles)
+        console.log('getInfo --> perm:' + perms)
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {

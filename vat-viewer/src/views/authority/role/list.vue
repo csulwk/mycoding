@@ -146,7 +146,7 @@ export default {
       this.listLoading = true
       getAllRole().then(resp => {
         const { data } = resp
-        console.log('data: ' + JSON.stringify(data))
+        // console.log('getAllRole --> data: ' + JSON.stringify(data))
         this.list = data
         this.listLoading = false
       })

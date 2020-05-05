@@ -67,7 +67,7 @@ export default {
       this.listLoading = true
       getAllPerm().then(resp => {
         const { data } = resp
-        console.log('data: ' + data)
+        // console.log('getAllPerm --> data: ' + JSON.stringify(data))
         this.tableData = data
         this.listLoading = false
       })

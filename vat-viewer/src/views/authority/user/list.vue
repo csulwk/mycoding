@@ -143,7 +143,7 @@ export default {
       this.listLoading = true
       getUserRoles().then(resp => {
         const { data } = resp
-        console.log('data: ' + data)
+        // console.log('fetchUser --> data: ' + JSON.stringify(data))
         this.list = data
         this.listLoading = false
       })
