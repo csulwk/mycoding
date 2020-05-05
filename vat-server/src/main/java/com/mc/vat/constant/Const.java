@@ -5,7 +5,7 @@ package com.mc.vat.constant;
  * @author kai
  * @date 2020-05-02 23:48
  */
-public interface Consts {
+public interface Const {
     /**
      * 加密算法
      */
@@ -14,4 +14,12 @@ public interface Consts {
      * 加密次数
      */
     int ENC_TIMES  = 2;
+    /**
+     * 用户有效状态
+     */
+    String USER_ENABLED_TRUE = "1";
+    /**
+     * 用户失效状态
+     */
+    String USER_ENABLED_FALSE = "0";
 }

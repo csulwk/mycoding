@@ -1,6 +1,6 @@
 package com.mc.vat.shiro;
 
-import com.mc.vat.constant.Consts;
+import com.mc.vat.constant.Const;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,8 +63,8 @@ public class ShiroConfig {
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         log.info("ShiroConfig.hashedCredentialsMatcher...");
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-        hashedCredentialsMatcher.setHashAlgorithmName(Consts.ENC_ALGORITHM);
-        hashedCredentialsMatcher.setHashIterations(Consts.ENC_TIMES);
+        hashedCredentialsMatcher.setHashAlgorithmName(Const.ENC_ALGORITHM);
+        hashedCredentialsMatcher.setHashIterations(Const.ENC_TIMES);
         return hashedCredentialsMatcher;
     }
 

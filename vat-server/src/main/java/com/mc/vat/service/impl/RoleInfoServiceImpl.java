@@ -1,6 +1,7 @@
 package com.mc.vat.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mc.vat.constant.Const;
 import com.mc.vat.constant.RetMsg;
 import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
@@ -31,7 +32,6 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
     private PermissionInfoMapper permissionInfoMapper;
     private RolePermissionTableMapper rolePermissionTableMapper;
     private final String OP_NAME = "coding";
-    private final String SET_ENABLED = "1";
 
     @Autowired
     public RoleInfoServiceImpl(RoleInfoMapper roleInfoMapper, PermissionInfoMapper permissionInfoMapper,
@@ -86,7 +86,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
         // 角色不存在则添加
         roleInfo = new RoleInfo();
         packageRole(roleInfo, req);
-        roleInfo.setRiStatus(SET_ENABLED);
+        roleInfo.setRiStatus(Const.USER_ENABLED_TRUE);
         roleInfo.setRiCreateBy(OP_NAME);
         roleInfo.setRiUpdateBy(OP_NAME);
         roleInfoMapper.saveRole(roleInfo);
@@ -106,7 +106,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
                 if (rolePerm == null) {
                     // 角色权限不存在则添加
                     rolePerm = packageRolePerm(roleInfo.getRiRoleId(), permInfo.getPiPermId());
-                    rolePerm.setRptEnabled(SET_ENABLED);
+                    rolePerm.setRptEnabled(Const.USER_ENABLED_TRUE);
                     rolePerm.setRptCreateBy(OP_NAME);
                     rolePerm.setRptUpdateBy(OP_NAME);
                     rolePermissionTableMapper.saveRolePerm(rolePerm);
@@ -137,7 +137,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
             // 若目标权限在原始权限中不存在则新增
             if (!permIds.contains(permId)) {
                 RolePermissionTable rolePerm = packageRolePerm(roleInfo.getRiRoleId(), permId);
-                rolePerm.setRptEnabled(SET_ENABLED);
+                rolePerm.setRptEnabled(Const.USER_ENABLED_TRUE);
                 rolePerm.setRptCreateBy(OP_NAME);
                 rolePerm.setRptUpdateBy(OP_NAME);
                 rolePermissionTableMapper.saveRolePerm(rolePerm);

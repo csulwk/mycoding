@@ -1,5 +1,6 @@
 package com.mc.vat.shiro;
 
+import com.mc.vat.constant.Const;
 import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
@@ -83,7 +84,7 @@ public class ShiroRealm extends AuthorizingRealm {
             log.info("用户不存在: {}", username);
             throw new UnknownAccountException();
         }
-        if ("0".equals(user.getUiStatus())) {
+        if (Const.USER_ENABLED_FALSE.equals(user.getUiStatus())) {
             log.info("用户已失效: {}", username);
             throw new LockedAccountException();
         }
