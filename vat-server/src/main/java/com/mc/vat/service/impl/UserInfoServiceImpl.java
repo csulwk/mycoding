@@ -1,7 +1,7 @@
 package com.mc.vat.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mc.vat.constant.Consts;
+import com.mc.vat.constant.Const;
 import com.mc.vat.constant.RetMsg;
 import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 用户处理
@@ -37,7 +36,6 @@ public class UserInfoServiceImpl implements IUserInfoService {
     private RolePermissionTableMapper rolePermissionTableMapper;
     private PermissionInfoMapper permissionInfoMapper;
     private final String OP_NAME = "coding";
-    private final String SET_ENABLED = "1";
 
     @Autowired
     public UserInfoServiceImpl(UserInfoMapper userInfoMapper, UserRoleTableMapper userRoleTableMapper,
@@ -99,7 +97,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
             UserRoleTable userRoleTable = new UserRoleTable();
             userRoleTable.setUrtUserId(user.getUiUserId());
             userRoleTable.setUrtRoleId(req.getRoleId());
-            userRoleTable.setUrtEnabled(SET_ENABLED);
+            userRoleTable.setUrtEnabled(Const.USER_ENABLED_TRUE);
             userRoleTable.setUrtCreateBy(OP_NAME);
             userRoleTableMapper.saveUserRole(userRoleTable);
         }
@@ -120,7 +118,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
                 userRoleTable = new UserRoleTable();
                 userRoleTable.setUrtUserId(user.getUiUserId());
                 userRoleTable.setUrtRoleId(req.getRoleId());
-                userRoleTable.setUrtEnabled(SET_ENABLED);
+                userRoleTable.setUrtEnabled(Const.USER_ENABLED_TRUE);
                 userRoleTable.setUrtCreateBy(OP_NAME);
                 userRoleTableMapper.saveUserRole(userRoleTable);
             } else if (!req.getRoleId().equals(userRoleTable.getUrtRoleId())){
@@ -168,7 +166,7 @@ public class UserInfoServiceImpl implements IUserInfoService {
     private void packageUser(UserInfo src, UserRoleReq des) {
         src.setUiUsername(des.getUsername());
         String salt = new SecureRandomNumberGenerator().nextBytes().toString();
-        String cipher = new SimpleHash(Consts.ENC_ALGORITHM, des.getPassword(), salt, Consts.ENC_TIMES).toString();
+        String cipher = new SimpleHash(Const.ENC_ALGORITHM, des.getPassword(), salt, Const.ENC_TIMES).toString();
         log.info("原始密码是 {}, 盐是： {}, 加密密文是：{}", des.getPassword(), salt, cipher);
         src.setUiSalt(salt);
         src.setUiPassword(cipher);

@@ -14,6 +14,14 @@ export function getRolePermList(role) {
   })
 }
 
+export function getRolePage(page) {
+  return request({
+    url: `role/page`,
+    method: 'post',
+    data: page
+  })
+}
+
 export function addRole(role) {
   return request({
     url: 'role/add',

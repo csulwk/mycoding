@@ -1,6 +1,7 @@
 package com.mc.vat.mapper;
 
 import com.mc.vat.entity.RolePermissionTable;
+import com.mc.vat.entity.page.RolePageResp;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -57,4 +58,10 @@ public interface RolePermissionTableMapper {
      */
     RolePermissionTable selectByRoleIdAndPermId(@Param("roleId") Integer roleId, @Param("permId") Integer permId);
 
+    /**
+     * 分页查询角色权限信息
+     * @param roleId 角色ID
+     * @return 分页数据
+     */
+    List<RolePageResp> selectRolePermInfoByRoleId(@Param("roleId") Integer roleId);
 }

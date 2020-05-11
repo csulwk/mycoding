@@ -5,6 +5,7 @@ import com.mc.vat.constant.RetMsg;
 import com.mc.vat.entity.PermTree;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
+import com.mc.vat.entity.page.RolePageReq;
 import com.mc.vat.entity.req.RolePermReq;
 import com.mc.vat.service.IPermissionInfoService;
 import com.mc.vat.service.IRoleInfoService;
@@ -49,6 +50,12 @@ public class QueryRoleController {
         }
         List<PermTree> result = permissionInfoService.getRolePermListByRoleId(id);
         return ResultUtil.retSuccess(result);
+    }
+
+    @RequestMapping(value = "/page", method = RequestMethod.POST)
+    public JSONObject queryRolePageData(@RequestBody RolePageReq req) {
+        log.info("分页查询 -> {}" , JSONObject.toJSONString(req));
+        return roleInfoService.getRolePageData(req);
     }
 
     @RequestMapping(value = "/{roleId}/perms", method = RequestMethod.GET)

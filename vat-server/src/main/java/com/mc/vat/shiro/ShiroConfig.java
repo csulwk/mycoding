@@ -1,21 +1,19 @@
 package com.mc.vat.shiro;
 
-import com.mc.vat.constant.Consts;
+import com.mc.vat.constant.Const;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-
-import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,35 +26,6 @@ import java.util.Map;
 public class ShiroConfig {
 
     /**
-     * cookie对象
-     * @return SimpleCookie
-     */
-    @Bean
-    public SimpleCookie rememberMeCookie() {
-        log.info("ShiroConfig.rememberMeCookie...");
-        // cookie的名称，对应前端的checkbox的name = remembered
-        SimpleCookie simpleCookie = new SimpleCookie("rememberMe");
-        simpleCookie.setHttpOnly(true);
-        // cookie生效时间2小时,单位秒
-        simpleCookie.setMaxAge(14400);
-        return simpleCookie;
-    }
-
-    /**
-     * cookie管理对象，记住我功能
-     * @return CookieRememberMeManager
-     */
-    @Bean
-    public CookieRememberMeManager rememberMeManager(SimpleCookie rememberMeCookie) {
-        log.info("ShiroConfig.rememberMeManager...");
-        CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
-        cookieRememberMeManager.setCookie(rememberMeCookie);
-        // 设置加密的Key,参数类型byte[],字节数组长度要求16
-        cookieRememberMeManager.setCipherKey("MYCODING_CRY_KEY".getBytes());
-        return cookieRememberMeManager;
-    }
-
-    /**
      * 为防止密码在数据库里明码存储，通过该方法对密码进行编码；
      * 当然在登陆认证的时候,这个类也负责对表单输入的密码进行编码。
      */
@@ -64,8 +33,8 @@ public class ShiroConfig {
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         log.info("ShiroConfig.hashedCredentialsMatcher...");
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-        hashedCredentialsMatcher.setHashAlgorithmName(Consts.ENC_ALGORITHM);
-        hashedCredentialsMatcher.setHashIterations(Consts.ENC_TIMES);
+        hashedCredentialsMatcher.setHashAlgorithmName(Const.ENC_ALGORITHM);
+        hashedCredentialsMatcher.setHashIterations(Const.ENC_TIMES);
         return hashedCredentialsMatcher;
     }
 
@@ -74,11 +43,33 @@ public class ShiroConfig {
      * @return ShiroRealm
      */
     @Bean
-    public ShiroRealm shiroRealm(HashedCredentialsMatcher hashedCredentialsMatcher) {
+    public ShiroRealm shiroRealm() {
         log.info("ShiroConfig.shiroRealm...");
         ShiroRealm shiroRealm = new ShiroRealm();
-        shiroRealm.setCredentialsMatcher(hashedCredentialsMatcher);
+        shiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return shiroRealm;
+    }
+
+    @Bean("sessionIdCookie")
+    public SimpleCookie sessionIdCookie(){
+        log.info("ShiroConfig.sessionIdCookie...");
+        //这个参数是cookie的名称
+        SimpleCookie simpleCookie = new SimpleCookie("session_id");
+        simpleCookie.setHttpOnly(true);
+        //maxAge=-1表示浏览器关闭时失效此Cookie
+        simpleCookie.setMaxAge(-1);
+        return simpleCookie;
+    }
+
+    @Bean("sessionManager")
+    public SessionManager sessionManager() {
+        log.info("ShiroConfig.sessionManager...");
+        ShiroSessionManager sessionManager = new ShiroSessionManager();
+        sessionManager.setSessionIdCookie(sessionIdCookie());
+        //取消url 后面的 JSESSIONID
+        sessionManager.setSessionIdUrlRewritingEnabled(false);
+        return sessionManager;
+
     }
 
     /**
@@ -86,15 +77,15 @@ public class ShiroConfig {
      * @return SecurityManager
      */
     @Bean
-    public SecurityManager securityManager(ShiroRealm shiroRealm, CookieRememberMeManager rememberMeManager) {
+    public SecurityManager securityManager() {
         log.info("ShiroConfig.securityManager...");
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 将自定义的realm交给SecurityManager管理
-        securityManager.setRealm(shiroRealm);
-        // 自定义缓存实现，使用redis
-        // 自定义session管理，使用redis
+        securityManager.setRealm(shiroRealm());
+        // 自定义session管理
+        securityManager.setSessionManager(sessionManager());
         // 使用记住我功能
-        securityManager.setRememberMeManager(rememberMeManager);
+        // securityManager.setRememberMeManager(rememberMeManager);
         return securityManager;
     }
 
@@ -115,11 +106,14 @@ public class ShiroConfig {
         filterMap.put("/mc/user/unauthorized", "anon");
         filterMap.put("/mc/user/login", "anon");
         filterMap.put("/auth/**", "anon");
+        filterMap.put("/role/page", "anon");
         filterMap.put("/mc/user/logout", "authc");
         filterMap.put("/mc/user/info", "authc");
         filterMap.put("/**", "authc");
 
-        shiroFilterFactoryBean.setLoginUrl("/mc/admin/unlogged");
+        // 设置登录失败，授权失败之后的uri
+        shiroFilterFactoryBean.setLoginUrl("/mc/user/unlogged");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/mc/user/unauthorized");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
         return shiroFilterFactoryBean;
     }

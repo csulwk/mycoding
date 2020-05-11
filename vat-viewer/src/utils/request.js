@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
@@ -29,16 +29,27 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    console.log('request.js --> res:' + res)
-    if (res.retCode && res.retCode !== '000000') {
+    // console.log('request.js --> res:' + JSON.stringify(res))
+    // if the custom code is not 000000, it is judged as an error.
+    if (res.retCode !== '000000') {
+      Message({
+        message: res.retMsg || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
+
+      // E00202: 用户未登录
       if (res.retCode === 'E00202') {
-        // 未登录
-        Message({
-          message: 'request.js --> res: + res',
-          type: 'error',
-          duration: 3 * 1000
+        // to re-login
+        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+          confirmButtonText: 'Re-Login',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          store.dispatch('user/resetToken').then(() => {
+            location.reload()
+          })
         })
-        store.commit('SET_USER', {})
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {

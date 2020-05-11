@@ -3,6 +3,7 @@ package com.mc.vat.service;
 import com.alibaba.fastjson.JSONObject;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.UserInfo;
+import com.mc.vat.entity.page.RolePageReq;
 import com.mc.vat.entity.req.RolePermReq;
 
 import java.util.List;
@@ -68,4 +69,11 @@ public interface IRoleInfoService {
      * @return 角色信息
      */
     JSONObject deleteRoleAndPerm(String roleCode);
+
+    /**
+     * 分页查询
+     * @param req 分页请求
+     * @return 分页数据
+     */
+    JSONObject getRolePageData(RolePageReq req);
 }

@@ -1,10 +1,16 @@
 package com.mc.vat.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.mc.vat.constant.Const;
 import com.mc.vat.constant.RetMsg;
 import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.RolePermissionTable;
+import com.mc.vat.entity.page.PageResult;
+import com.mc.vat.entity.page.RolePageReq;
+import com.mc.vat.entity.page.RolePageResp;
 import com.mc.vat.entity.req.RolePermReq;
 import com.mc.vat.mapper.PermissionInfoMapper;
 import com.mc.vat.mapper.RoleInfoMapper;
@@ -15,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -31,7 +38,6 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
     private PermissionInfoMapper permissionInfoMapper;
     private RolePermissionTableMapper rolePermissionTableMapper;
     private final String OP_NAME = "coding";
-    private final String SET_ENABLED = "1";
 
     @Autowired
     public RoleInfoServiceImpl(RoleInfoMapper roleInfoMapper, PermissionInfoMapper permissionInfoMapper,
@@ -86,7 +92,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
         // 角色不存在则添加
         roleInfo = new RoleInfo();
         packageRole(roleInfo, req);
-        roleInfo.setRiStatus(SET_ENABLED);
+        roleInfo.setRiStatus(Const.USER_ENABLED_TRUE);
         roleInfo.setRiCreateBy(OP_NAME);
         roleInfo.setRiUpdateBy(OP_NAME);
         roleInfoMapper.saveRole(roleInfo);
@@ -106,7 +112,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
                 if (rolePerm == null) {
                     // 角色权限不存在则添加
                     rolePerm = packageRolePerm(roleInfo.getRiRoleId(), permInfo.getPiPermId());
-                    rolePerm.setRptEnabled(SET_ENABLED);
+                    rolePerm.setRptEnabled(Const.USER_ENABLED_TRUE);
                     rolePerm.setRptCreateBy(OP_NAME);
                     rolePerm.setRptUpdateBy(OP_NAME);
                     rolePermissionTableMapper.saveRolePerm(rolePerm);
@@ -137,7 +143,7 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
             // 若目标权限在原始权限中不存在则新增
             if (!permIds.contains(permId)) {
                 RolePermissionTable rolePerm = packageRolePerm(roleInfo.getRiRoleId(), permId);
-                rolePerm.setRptEnabled(SET_ENABLED);
+                rolePerm.setRptEnabled(Const.USER_ENABLED_TRUE);
                 rolePerm.setRptCreateBy(OP_NAME);
                 rolePerm.setRptUpdateBy(OP_NAME);
                 rolePermissionTableMapper.saveRolePerm(rolePerm);
@@ -173,6 +179,25 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
         roleInfoMapper.deleteByRoleId(roleInfo.getRiRoleId());
         log.info("删除角色 -> {}", roleInfo.getRiRoleId());
         return ResultUtil.retSuccess().fluentPut("roleId", roleInfo.getRiRoleId());
+    }
+
+    @Override
+    public JSONObject getRolePageData(RolePageReq req) {
+        // 若角色角色ID不存在则查询全部数据，否则查询指定的角色数据
+        if (req.getRoleId() != null ) {
+            RoleInfo roleInfo = roleInfoMapper.selectByRoleId(req.getRoleId());
+            if (ObjectUtils.isEmpty(roleInfo)) {
+                return  ResultUtil.resp(RetMsg.RET_E301);
+            }
+        }
+
+        int pageNum = req.getPageNum();
+        int pageSize = req.getPageSize();
+        PageHelper.startPage(pageNum, pageSize);
+        List<RolePageResp> roleList = rolePermissionTableMapper.selectRolePermInfoByRoleId(req.getRoleId());
+        PageResult<RolePageResp> result = new PageResult<>(new PageInfo<>(roleList));
+        log.info("分页结果：{}", result);
+        return ResultUtil.retSuccess(result);
     }
 
     /**
