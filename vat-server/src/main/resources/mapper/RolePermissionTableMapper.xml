@@ -13,10 +13,39 @@
     <result column="rpt_version" jdbcType="INTEGER" property="rptVersion" />
   </resultMap>
 
+  <resultMap id="PageData" type="com.mc.vat.entity.page.RolePageResp">
+    <id column="rpt_id" property="rptId" />
+    <result column="rpt_role_id" property="roleId" />
+    <result column="ri_role_code" property="roleCode" />
+    <result column="ri_role_desc" property="roleDesc" />
+    <result column="rpt_perm_id" property="permId" />
+    <result column="pi_perm_code" property="permCode" />
+    <result column="pi_perm_desc" property="permDesc" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     rpt_id, rpt_role_id, rpt_perm_id, rpt_enabled, rpt_create_by, rpt_create_time, rpt_update_by,
     rpt_update_time, rpt_version
   </sql>
+
+  <select id="selectRolePermInfoByRoleId" resultMap="PageData">
+    select rpt.rpt_id,
+           rpt.rpt_role_id,ri.ri_role_code,ri.ri_role_desc,
+           rpt.rpt_perm_id,pi.pi_perm_code,pi.pi_perm_desc
+    from (
+    select rpt_id,rpt_role_id,rpt_perm_id
+    from role_permission_table
+    <where>
+      <if test = "roleId != null and roleId != ''">
+        rpt_role_id = #{roleId}
+      </if>
+    </where>
+    ) rpt
+    left join role_info ri
+    on rpt.rpt_role_id = ri.ri_role_id
+    left join permission_info pi
+    on rpt.rpt_perm_id = pi.pi_perm_id
+  </select>
 
   <select id="selectPermIdsByRoleIds" resultType="java.lang.Integer">
     select rpt_perm_id

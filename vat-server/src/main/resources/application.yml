@@ -18,4 +18,9 @@ mybatis:
     map-underscore-to-camel-case: true
 logging:
   level:
-    com.mc.vat.mapper: trace
+    com.mc.vat.mapper: debug
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

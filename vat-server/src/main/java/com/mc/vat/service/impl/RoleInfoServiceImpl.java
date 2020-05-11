@@ -1,11 +1,16 @@
 package com.mc.vat.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.mc.vat.constant.Const;
 import com.mc.vat.constant.RetMsg;
 import com.mc.vat.entity.PermissionInfo;
 import com.mc.vat.entity.RoleInfo;
 import com.mc.vat.entity.RolePermissionTable;
+import com.mc.vat.entity.page.PageResult;
+import com.mc.vat.entity.page.RolePageReq;
+import com.mc.vat.entity.page.RolePageResp;
 import com.mc.vat.entity.req.RolePermReq;
 import com.mc.vat.mapper.PermissionInfoMapper;
 import com.mc.vat.mapper.RoleInfoMapper;
@@ -16,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -173,6 +179,25 @@ public class RoleInfoServiceImpl implements IRoleInfoService {
         roleInfoMapper.deleteByRoleId(roleInfo.getRiRoleId());
         log.info("删除角色 -> {}", roleInfo.getRiRoleId());
         return ResultUtil.retSuccess().fluentPut("roleId", roleInfo.getRiRoleId());
+    }
+
+    @Override
+    public JSONObject getRolePageData(RolePageReq req) {
+        // 若角色角色ID不存在则查询全部数据，否则查询指定的角色数据
+        if (req.getRoleId() != null ) {
+            RoleInfo roleInfo = roleInfoMapper.selectByRoleId(req.getRoleId());
+            if (ObjectUtils.isEmpty(roleInfo)) {
+                return  ResultUtil.resp(RetMsg.RET_E301);
+            }
+        }
+
+        int pageNum = req.getPageNum();
+        int pageSize = req.getPageSize();
+        PageHelper.startPage(pageNum, pageSize);
+        List<RolePageResp> roleList = rolePermissionTableMapper.selectRolePermInfoByRoleId(req.getRoleId());
+        PageResult<RolePageResp> result = new PageResult<>(new PageInfo<>(roleList));
+        log.info("分页结果：{}", result);
+        return ResultUtil.retSuccess(result);
     }
 
     /**
